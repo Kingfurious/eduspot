@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Researchmasterdetail.dart';
 import 'Researchmasterdetail.dart' as detail;
-import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
 
 // Color Palette
@@ -59,7 +59,7 @@ class ResearchAssistantApp extends StatelessWidget {
           fillColor: Colors.white,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 4,
           shadowColor: Colors.black.withOpacity(0.1),
           shape: RoundedRectangleBorder(
