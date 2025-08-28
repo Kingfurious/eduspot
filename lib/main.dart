@@ -12,13 +12,11 @@ import 'login_screen.dart'; // Contains LoginScreen
 import 'home_page.dart' as home; // Contains DashboardScreen
 import 'student_details.dart' as students; // Contains CreateProfilePage
 import 'firebase_options.dart';
-import 'ExploreScreen.dart';
-import 'CommentScreen.dart';
-import 'message_screen.dart'; // Added for MessagesScreen
 import 'Services/presence_service.dart'; // Added for PresenceService
 
 // Initialize flutter_local_notifications
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 // Define notification channel for Android
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -59,8 +57,10 @@ void main() async {
   }
 
   // Initialize flutter_local_notifications
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  const DarwinInitializationSettings initializationSettingsDarwin =
+      DarwinInitializationSettings();
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsDarwin,
@@ -71,7 +71,10 @@ void main() async {
       // Handle notification tap when app is in foreground
       if (response.payload != null) {
         final data = Map<String, String>.fromEntries(
-          response.payload!.split('&').map((e) => e.split('=')).map((e) => MapEntry(e[0], e[1])),
+          response.payload!
+              .split('&')
+              .map((e) => e.split('='))
+              .map((e) => MapEntry(e[0], e[1])),
         );
         _handleNotificationNavigationFromPayload(data);
       }
@@ -80,7 +83,8 @@ void main() async {
 
   // Create the notification channel on Android
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   // Initialize Firebase Cloud Messaging (FCM)
@@ -151,7 +155,9 @@ Future<void> setupFirebaseMessaging() async {
           ),
           iOS: const DarwinNotificationDetails(),
         ),
-        payload: message.data.entries.map((e) => '${e.key}=${e.value}').join('&'), // Pass data as payload
+        payload: message.data.entries
+            .map((e) => '${e.key}=${e.value}')
+            .join('&'), // Pass data as payload
       );
     }
   });
@@ -179,20 +185,11 @@ void _handleNotificationNavigationFromPayload(Map<String, dynamic> data) {
   final type = data['type'] as String?;
   final postId = data['postId'] as String?;
 
-  if (postId != null && postId.isNotEmpty && navigatorKey.currentState != null) {
-    if (type == 'like' || type == 'milestone') {
-      // Navigate to the ExploreScreen with the specific post
-      navigatorKey.currentState?.pushNamed(
-        '/explore',
-        arguments: {'postId': postId}, // Pass the postId to ExploreScreen
-      );
-    } else if (type == 'comment') {
-      // Navigate to the CommentScreen for the specific post
-      navigatorKey.currentState?.pushNamed(
-        '/comments',
-        arguments: {'postId': postId},
-      );
-    }
+  if (postId != null &&
+      postId.isNotEmpty &&
+      navigatorKey.currentState != null) {
+    // No specific navigation for comments or explore after removal.
+    // Handle other types of notifications here if applicable.
   }
 }
 
@@ -216,7 +213,10 @@ class _MyAppState extends State<MyApp> {
       if (user != null) {
         String? token = await FirebaseMessaging.instance.getToken();
         if (token != null) {
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set({
             'fcmToken': token,
             'lastUpdated': FieldValue.serverTimestamp(),
           }, SetOptions(merge: true));
@@ -247,17 +247,11 @@ class _MyAppState extends State<MyApp> {
         "/welcome": (context) => WelcomeScreen(),
         "/onboarding": (context) => OnboardingScreen(),
         "/login": (context) => const LoginScreen(),
-        "/student_details": (context) => students.CreateProfilePage(fullName: "Default Student"),
+        "/student_details": (context) =>
+            students.CreateProfilePage(fullName: "Default Student"),
         "/home_page": (context) => home.DashboardScreen(
-          username: FirebaseAuth.instance.currentUser?.displayName ?? '',
-        ), // Pass username dynamically
-        "/explore": (context) => const ExploreScreen(), // ExploreScreen route
-        "/comments": (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          final postId = args?['postId'] as String? ?? '';
-          return CommentScreen(postId: postId);
-        },
-        "/messages": (context) => const MessagesScreen(), // Added MessagesScreen route
+              username: FirebaseAuth.instance.currentUser?.displayName ?? '',
+            ), // Pass username dynamically
       },
     );
   }

@@ -11,7 +11,6 @@ import 'dart:ui';
 
 // Import necessary screens
 import 'ProfileScreen.dart';
-import 'my_posts_screen.dart';
 
 // Import App Colors (same as in ProfileScreen)
 class AppColors {
@@ -36,7 +35,8 @@ class ProfileSettingsScreen extends StatefulWidget {
   State<ProfileSettingsScreen> createState() => _ProfileSettingsScreenState();
 }
 
-class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with SingleTickerProviderStateMixin {
+class _ProfileSettingsScreenState extends State<ProfileSettingsScreen>
+    with SingleTickerProviderStateMixin {
   final User? currentUser = FirebaseAuth.instance.currentUser;
   bool _isLoading = true;
   bool _hasChangedName = false;
@@ -106,12 +106,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
             .get();
 
         if (userDoc.exists) {
-          Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
 
           if (mounted) {
             setState(() {
               _hasChangedName = userData['hasChangedName'] ?? false;
-              _userName = userData['fullName'] ?? currentUser!.displayName ?? 'User';
+              _userName =
+                  userData['fullName'] ?? currentUser!.displayName ?? 'User';
               _profileImageUrl = userData['imageUrl'] ?? currentUser!.photoURL;
               _isLoading = false;
             });
@@ -222,12 +224,17 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                       color: Colors.white,
                       size: 32,
                     ),
-                  ).animate(onPlay: (controller) => controller.repeat())
+                  )
+                      .animate(onPlay: (controller) => controller.repeat())
                       .rotate(duration: 2000.ms, curve: Curves.easeInOut)
                       .then()
-                      .scale(begin: const Offset(0.9, 0.9), end: const Offset(1.1, 1.1))
+                      .scale(
+                          begin: const Offset(0.9, 0.9),
+                          end: const Offset(1.1, 1.1))
                       .then()
-                      .scale(begin: const Offset(1.1, 1.1), end: const Offset(1.0, 1.0)),
+                      .scale(
+                          begin: const Offset(1.1, 1.1),
+                          end: const Offset(1.0, 1.0)),
 
                   const SizedBox(height: 24),
 
@@ -240,7 +247,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                         height: 60,
                         child: CircularProgressIndicator(
                           strokeWidth: 4,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryBlue),
                           backgroundColor: AppColors.veryLightBlue,
                         ),
                       ),
@@ -258,20 +266,21 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                         ),
                       ),
                     ],
-                  ).animate(onPlay: (controller) => controller.repeat())
-                      .scale(
-                    begin: const Offset(0.8, 0.8),
-                    end: const Offset(1.0, 1.0),
-                    duration: 1000.ms,
-                    curve: Curves.easeInOut,
                   )
+                      .animate(onPlay: (controller) => controller.repeat())
+                      .scale(
+                        begin: const Offset(0.8, 0.8),
+                        end: const Offset(1.0, 1.0),
+                        duration: 1000.ms,
+                        curve: Curves.easeInOut,
+                      )
                       .then()
                       .scale(
-                    begin: const Offset(1.0, 1.0),
-                    end: const Offset(0.8, 0.8),
-                    duration: 1000.ms,
-                    curve: Curves.easeInOut,
-                  ),
+                        begin: const Offset(1.0, 1.0),
+                        end: const Offset(0.8, 0.8),
+                        duration: 1000.ms,
+                        curve: Curves.easeInOut,
+                      ),
 
                   const SizedBox(height: 24),
 
@@ -284,7 +293,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                       color: AppColors.textPrimary,
                       letterSpacing: 0.5,
                     ),
-                  ).animate()
+                  )
+                      .animate()
                       .fadeIn(duration: 600.ms)
                       .slideY(begin: 0.3, end: 0),
 
@@ -299,7 +309,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                       color: AppColors.textSecondary,
                       height: 1.4,
                     ),
-                  ).animate()
+                  )
+                      .animate()
                       .fadeIn(duration: 800.ms, delay: 300.ms)
                       .slideY(begin: 0.2, end: 0),
 
@@ -318,27 +329,30 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                             color: AppColors.primaryBlue,
                             shape: BoxShape.circle,
                           ),
-                        ).animate(onPlay: (controller) => controller.repeat())
-                            .scale(
-                          begin: const Offset(0.5, 0.5),
-                          end: const Offset(1.0, 1.0),
-                          duration: 600.ms,
-                          delay: Duration(milliseconds: index * 200),
-                          curve: Curves.easeInOut,
                         )
+                            .animate(
+                                onPlay: (controller) => controller.repeat())
+                            .scale(
+                              begin: const Offset(0.5, 0.5),
+                              end: const Offset(1.0, 1.0),
+                              duration: 600.ms,
+                              delay: Duration(milliseconds: index * 200),
+                              curve: Curves.easeInOut,
+                            )
                             .then()
                             .scale(
-                          begin: const Offset(1.0, 1.0),
-                          end: const Offset(0.5, 0.5),
-                          duration: 600.ms,
-                          curve: Curves.easeInOut,
-                        ),
+                              begin: const Offset(1.0, 1.0),
+                              end: const Offset(0.5, 0.5),
+                              duration: 600.ms,
+                              curve: Curves.easeInOut,
+                            ),
                       );
                     }),
                   ),
                 ],
               ),
-            ).animate()
+            )
+                .animate()
                 .fadeIn(duration: 400.ms)
                 .scale(begin: const Offset(0.8, 0.8), curve: Curves.elasticOut),
           ),
@@ -359,7 +373,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
       // Navigate to LoginScreen with smooth transition
       Navigator.of(context).pushAndRemoveUntil(
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => LoginScreen(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              LoginScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
@@ -376,7 +391,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
           },
           transitionDuration: const Duration(milliseconds: 600),
         ),
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
       );
 
       // Show success message with custom styling
@@ -441,7 +456,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
           );
         }
       });
-
     } catch (e) {
       // Close loading dialog if error occurs
       if (Navigator.canPop(context)) {
@@ -518,7 +532,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
     }
   }
 
-
   // Method to select a profile picture
   Future<void> _selectProfilePicture() async {
     final ImagePicker _picker = ImagePicker();
@@ -533,7 +546,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(32)),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.shadowColor.withOpacity(0.1),
@@ -701,14 +715,19 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
       String? userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) return;
 
-      final String fileName = 'profile_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final Reference storageRef = FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
+      final String fileName =
+          'profile_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
       final UploadTask uploadTask = storageRef.putFile(_selectedImage!);
 
       final TaskSnapshot taskSnapshot = await uploadTask;
       final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-      await FirebaseFirestore.instance.collection('studentprofile').doc(userId).update({
+      await FirebaseFirestore.instance
+          .collection('studentprofile')
+          .doc(userId)
+          .update({
         'imageUrl': downloadUrl,
       });
 
@@ -723,7 +742,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
       print('Error uploading profile picture: $e');
       if (mounted) {
         setState(() => _isLoading = false);
-        _showCustomSnackBar('Error updating profile picture: $e', isError: true);
+        _showCustomSnackBar('Error updating profile picture: $e',
+            isError: true);
       }
     }
   }
@@ -734,7 +754,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
         content: Row(
           children: [
             Icon(
-              isError ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
+              isError
+                  ? Icons.error_outline_rounded
+                  : Icons.check_circle_outline_rounded,
               color: Colors.white,
               size: 24,
             ),
@@ -758,9 +780,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         duration: const Duration(seconds: 3),
-        backgroundColor: isError
-            ? AppColors.errorColor
-            : AppColors.successColor,
+        backgroundColor:
+            isError ? AppColors.errorColor : AppColors.successColor,
         elevation: 6,
       ),
     );
@@ -774,9 +795,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
       appBar: AppBar(
         elevation: _isScrolled ? 2 : 0,
         scrolledUnderElevation: 0,
-        backgroundColor: _isScrolled
-            ? AppColors.primaryBlue
-            : Colors.transparent,
+        backgroundColor:
+            _isScrolled ? AppColors.primaryBlue : Colors.transparent,
         title: AnimatedOpacity(
           opacity: _isScrolled ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 200),
@@ -806,11 +826,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                   ),
               ],
             ),
-            child: Icon(
-                Icons.arrow_back_rounded,
+            child: Icon(Icons.arrow_back_rounded,
                 color: _isScrolled ? Colors.white : AppColors.primaryBlue,
-                size: 20
-            ),
+                size: 20),
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -826,13 +844,13 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                     : null,
                 child: _profileImageUrl == null
                     ? Text(
-                  _getInitials(_userName),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                )
+                        _getInitials(_userName),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      )
                     : null,
               ),
             ),
@@ -840,150 +858,155 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
       ),
       body: _isLoading
           ? Center(
-        child: CircularProgressIndicator(color: AppColors.primaryBlue),
-      )
+              child: CircularProgressIndicator(color: AppColors.primaryBlue),
+            )
           : CustomScrollView(
-        controller: _scrollController,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // Profile Header
-          SliverToBoxAdapter(
-            child: _buildProfileHeader(),
-          ),
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // Profile Header
+                SliverToBoxAdapter(
+                  child: _buildProfileHeader(),
+                ),
 
-          // Settings Sections
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Account section
-                  _buildSectionHeader(
-                    title: 'Account',
-                    icon: Icons.person_rounded,
-                    isExpanded: _accountExpanded,
-                    onTap: () => setState(() => _accountExpanded = !_accountExpanded),
-                  ),
+                // Settings Sections
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Account section
+                        _buildSectionHeader(
+                          title: 'Account',
+                          icon: Icons.person_rounded,
+                          isExpanded: _accountExpanded,
+                          onTap: () => setState(
+                              () => _accountExpanded = !_accountExpanded),
+                        ),
 
-                  if (_accountExpanded) ...[
-                    const SizedBox(height: 8),
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.edit_rounded,
-                      title: 'Edit Profile',
-                      subtitle: _hasChangedName
-                          ? 'Note: You can no longer change your username'
-                          : 'You can change your username only once',
-                      iconColor: AppColors.primaryBlue,
-                      onTap: () {
-                        if (currentUser != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateProfilePage(
-                                FullName: _userName,
-                              ),
-                            ),
-                          ).then((_) {
-                            _loadUserData();
-                          });
-                        } else {
-                          _showCustomSnackBar('Please log in to edit profile', isError: true);
-                        }
-                      },
-                    ),
-
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.article_rounded,
-                      title: 'My Posts',
-                      subtitle: 'View and manage your created content',
-                      iconColor: AppColors.accentBlue,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyPostsScreen(),
+                        if (_accountExpanded) ...[
+                          const SizedBox(height: 8),
+                          _buildSettingsTile(
+                            context: context,
+                            icon: Icons.edit_rounded,
+                            title: 'Edit Profile',
+                            subtitle: _hasChangedName
+                                ? 'Note: You can no longer change your username'
+                                : 'You can change your username only once',
+                            iconColor: AppColors.primaryBlue,
+                            onTap: () {
+                              if (currentUser != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CreateProfilePage(
+                                      FullName: _userName,
+                                    ),
+                                  ),
+                                ).then((_) {
+                                  _loadUserData();
+                                });
+                              } else {
+                                _showCustomSnackBar(
+                                    'Please log in to edit profile',
+                                    isError: true);
+                              }
+                            },
                           ),
-                        );
-                      },
+
+                          // Settings item for My Posts
+                          // ListTile(  // Commented out as MyPostsScreen is removed
+                          //   leading: Icon(Icons.photo_library, color: AppColors.accentBlue),
+                          //   title: Text('My Posts', style: TextStyle(color: AppColors.textPrimary)),
+                          //   trailing: Icon(Icons.arrow_forward_ios, color: AppColors.iconSecondary, size: 18),
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder: (context) => const MyPostsScreen(),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+
+                          _buildSettingsTile(
+                            context: context,
+                            icon: Icons.notifications_rounded,
+                            title: 'Notifications',
+                            subtitle: 'Manage your notification preferences',
+                            iconColor: AppColors.lightBlue,
+                            onTap: () {
+                              _showCustomSnackBar(
+                                  'Notification Settings Coming Soon!');
+                            },
+                          ),
+
+                          _buildSettingsTile(
+                            context: context,
+                            icon: Icons.security_rounded,
+                            title: 'Account & Security',
+                            subtitle:
+                                'Update your password and security settings',
+                            iconColor: AppColors.successColor,
+                            onTap: () {
+                              _showCustomSnackBar(
+                                  'Account & Security Settings Coming Soon!');
+                            },
+                          ),
+                        ],
+
+                        const SizedBox(height: 16),
+
+                        // Support section
+                        _buildSectionHeader(
+                          title: 'Support & About',
+                          icon: Icons.help_rounded,
+                          isExpanded: _supportExpanded,
+                          onTap: () => setState(
+                              () => _supportExpanded = !_supportExpanded),
+                        ),
+
+                        if (_supportExpanded) ...[
+                          const SizedBox(height: 8),
+                          _buildSettingsTile(
+                            context: context,
+                            icon: Icons.help_outline_rounded,
+                            title: 'Help & Support',
+                            subtitle: 'Get assistance and support',
+                            iconColor: AppColors.textSecondary,
+                            onTap: () {
+                              _showCustomSnackBar(
+                                  'Help & Support Coming Soon!');
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context: context,
+                            icon: Icons.info_rounded,
+                            title: 'About',
+                            subtitle: 'App version and information',
+                            iconColor: AppColors.textSecondary,
+                            onTap: () {
+                              _showAboutDialog();
+                            },
+                          ),
+                        ],
+
+                        const SizedBox(height: 24),
+
+                        // Logout button
+                        _buildLogoutButton(),
+                      ],
                     ),
-
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.notifications_rounded,
-                      title: 'Notifications',
-                      subtitle: 'Manage your notification preferences',
-                      iconColor: AppColors.lightBlue,
-                      onTap: () {
-                        _showCustomSnackBar('Notification Settings Coming Soon!');
-                      },
-                    ),
-
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.security_rounded,
-                      title: 'Account & Security',
-                      subtitle: 'Update your password and security settings',
-                      iconColor: AppColors.successColor,
-                      onTap: () {
-                        _showCustomSnackBar('Account & Security Settings Coming Soon!');
-                      },
-                    ),
-                  ],
-
-                  const SizedBox(height: 16),
-
-
-                  // Support section
-                  _buildSectionHeader(
-                    title: 'Support & About',
-                    icon: Icons.help_rounded,
-                    isExpanded: _supportExpanded,
-                    onTap: () => setState(() => _supportExpanded = !_supportExpanded),
                   ),
+                ),
 
-                  if (_supportExpanded) ...[
-                    const SizedBox(height: 8),
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.help_outline_rounded,
-                      title: 'Help & Support',
-                      subtitle: 'Get assistance and support',
-                      iconColor: AppColors.textSecondary,
-                      onTap: () {
-                        _showCustomSnackBar('Help & Support Coming Soon!');
-                      },
-                    ),
-
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.info_rounded,
-                      title: 'About',
-                      subtitle: 'App version and information',
-                      iconColor: AppColors.textSecondary,
-                      onTap: () {
-                        _showAboutDialog();
-                      },
-                    ),
-                  ],
-
-                  const SizedBox(height: 24),
-
-                  // Logout button
-                  _buildLogoutButton(),
-                ],
-              ),
+                // Bottom spacing
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 40),
+                ),
+              ],
             ),
-          ),
-
-          // Bottom spacing
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 40),
-          ),
-        ],
-      ),
     );
   }
 
@@ -1036,15 +1059,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                     border: Border.all(color: Colors.white, width: 4),
                     image: _selectedImage != null
                         ? DecorationImage(
-                      image: FileImage(_selectedImage!),
-                      fit: BoxFit.cover,
-                    )
-                        : _profileImageUrl != null && _profileImageUrl!.isNotEmpty
-                        ? DecorationImage(
-                      image: NetworkImage(_profileImageUrl!),
-                      fit: BoxFit.cover,
-                    )
-                        : null,
+                            image: FileImage(_selectedImage!),
+                            fit: BoxFit.cover,
+                          )
+                        : _profileImageUrl != null &&
+                                _profileImageUrl!.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(_profileImageUrl!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
@@ -1054,17 +1078,19 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                       ),
                     ],
                   ),
-                  child: (_selectedImage == null && (_profileImageUrl == null || _profileImageUrl!.isEmpty))
+                  child: (_selectedImage == null &&
+                          (_profileImageUrl == null ||
+                              _profileImageUrl!.isEmpty))
                       ? Center(
-                    child: Text(
-                      _getInitials(_userName),
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryBlue,
-                      ),
-                    ),
-                  )
+                          child: Text(
+                            _getInitials(_userName),
+                            style: TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryBlue,
+                            ),
+                          ),
+                        )
                       : null,
                 ),
                 Container(
@@ -1090,7 +1116,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                 ),
               ],
             ),
-          ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms, begin: const Offset(0.8, 0.8)),
+          )
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .scale(delay: 200.ms, begin: const Offset(0.8, 0.8)),
 
           const SizedBox(height: 20),
 
@@ -1103,7 +1132,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
               color: Colors.white,
               letterSpacing: 0.5,
             ),
-          ).animate().fadeIn(duration: 600.ms).moveY(begin: 10, end: 0, delay: 300.ms),
+          )
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .moveY(begin: 10, end: 0, delay: 300.ms),
 
           const SizedBox(height: 8),
 
@@ -1135,7 +1167,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                 ),
               ],
             ),
-          ).animate().fadeIn(duration: 600.ms).moveY(begin: 10, end: 0, delay: 400.ms),
+          )
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .moveY(begin: 10, end: 0, delay: 400.ms),
         ],
       ),
     );
@@ -1181,7 +1216,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
               ),
             ),
             Icon(
-              isExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+              isExpanded
+                  ? Icons.expand_less_rounded
+                  : Icons.expand_more_rounded,
               color: AppColors.textSecondary,
               size: 24,
             ),
@@ -1196,125 +1233,132 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
     showDialog(
       context: context,
       builder: (context) => Dialog(
-          insetPadding: const EdgeInsets.all(20),
-          backgroundColor: Colors.transparent,
-          child: Container(
+        insetPadding: const EdgeInsets.all(20),
+        backgroundColor: Colors.transparent,
+        child: Container(
           decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.3),
-          blurRadius: 20,
-          spreadRadius: 5,
-        ),
-      ],
-    ),
-    clipBehavior: Clip.antiAlias,
-    child: Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-    // Image with loading indicator
-    Stack(
-    alignment: Alignment.center,
-    children: [
-    AspectRatio(
-    aspectRatio: 1,
-    child: Image.network(
-    imageUrl,
-    fit: BoxFit.cover,
-    width: double.infinity,
-    loadingBuilder: (context, child, loadingProgress) {
-    if (loadingProgress == null) return child;
-    return Container(
-    color: AppColors.textSecondary.withOpacity(0.1),
-    child: Center(
-    child: CircularProgressIndicator(
-    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
-    value: loadingProgress.expectedTotalBytes != null
-    ? loadingProgress.cumulativeBytesLoaded /
-    (loadingProgress.expectedTotalBytes ?? 1)
-        : null,
-    ),
-    ),
-    );
-    },
-    errorBuilder: (context, error, stackTrace) {
-    return Container(
-    color: AppColors.textSecondary.withOpacity(0.1),
-    child: Center(
-    child: Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-    Icon(Icons.error_outline, color: AppColors.errorColor,size: 32),
-      const SizedBox(height: 8),
-      const Text(
-        'Image failed to load',
-        style: TextStyle(
-          color: AppColors.errorColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    ],
-    ),
-    ),
-    );
-    },
-    ),
-    ),
-
-      // Close button overlay
-      Positioned(
-        right: 12,
-        top: 12,
-        child: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.close_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
+                spreadRadius: 5,
+              ),
+            ],
           ),
-        ),
-      ),
-    ],
-    ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Image with loading indicator
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: AppColors.textSecondary.withOpacity(0.1),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.primaryBlue),
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: AppColors.textSecondary.withOpacity(0.1),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.error_outline,
+                                    color: AppColors.errorColor, size: 32),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Image failed to load',
+                                  style: TextStyle(
+                                    color: AppColors.errorColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
 
-      // Controls bar with actions
-      Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildImageActionButton(
-              icon: Icons.edit_rounded,
-              label: 'Change',
-              onTap: () {
-                Navigator.pop(context);
-                _selectProfilePicture();
-              },
-            ),
-            _buildImageActionButton(
-              icon: Icons.share_rounded,
-              label: 'Share',
-              onTap: () {
-                Navigator.pop(context);
-                _showCustomSnackBar('Sharing profile image coming soon!');
-              },
-            ),
-          ],
-        ),
-      ),
-    ],
-    ),
-          ).animate().fadeIn(duration: 300.ms).scale(begin: const Offset(0.9, 0.9)),
+                  // Close button overlay
+                  Positioned(
+                    right: 12,
+                    top: 12,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // Controls bar with actions
+              Container(
+                color: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildImageActionButton(
+                      icon: Icons.edit_rounded,
+                      label: 'Change',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _selectProfilePicture();
+                      },
+                    ),
+                    _buildImageActionButton(
+                      icon: Icons.share_rounded,
+                      label: 'Share',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _showCustomSnackBar(
+                            'Sharing profile image coming soon!');
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+            .animate()
+            .fadeIn(duration: 300.ms)
+            .scale(begin: const Offset(0.9, 0.9)),
       ),
     );
   }
@@ -1353,7 +1397,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
 
   // Helper to get user initials
   String _getInitials(String name) {
-    List<String> nameParts = name.split(' ').where((part) => part.isNotEmpty).toList();
+    List<String> nameParts =
+        name.split(' ').where((part) => part.isNotEmpty).toList();
     if (nameParts.length > 1) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
     } else if (name.isNotEmpty) {
@@ -1440,18 +1485,19 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                     color: AppColors.background,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                      Icons.arrow_forward_ios_rounded,
+                  child: Icon(Icons.arrow_forward_ios_rounded,
                       size: 14,
-                      color: AppColors.textSecondary.withOpacity(0.7)
-                  ),
+                      color: AppColors.textSecondary.withOpacity(0.7)),
                 ),
               ],
             ),
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 500.ms, delay: 200.ms).slideX(begin: 0.05, end: 0);
+    )
+        .animate()
+        .fadeIn(duration: 500.ms, delay: 200.ms)
+        .slideX(begin: 0.05, end: 0);
   }
 
   Widget _buildLogoutButton() {
@@ -1634,7 +1680,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> with Sing
                 ],
               ),
             ),
-          ).animate().fadeIn(duration: 300.ms).scale(begin: const Offset(0.9, 0.9)),
+          )
+              .animate()
+              .fadeIn(duration: 300.ms)
+              .scale(begin: const Offset(0.9, 0.9)),
         );
       },
     );

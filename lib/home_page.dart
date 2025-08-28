@@ -1,6 +1,5 @@
 import 'package:eduspark/Applymentor.dart';
 import 'package:eduspark/Courseform.dart';
-import 'package:eduspark/ExploreJobsPage.dart';
 import 'package:eduspark/Models/Course.dart';
 import 'package:eduspark/Researchmaster.dart';
 import 'package:eduspark/course_detail_screen.dart';
@@ -14,7 +13,6 @@ import 'MentorPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:eduspark/CoursesScreen.dart';
-import 'package:eduspark/ExploreScreen.dart';
 import 'package:eduspark/ProfileScreen.dart';
 import 'package:eduspark/MyTeamScreen.dart';
 import 'package:eduspark/projectsscreen.dart';
@@ -67,10 +65,12 @@ class AppColors {
 }
 
 void main() {
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -122,7 +122,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +143,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               HomeScreen(username: widget.username),
               const ProjectsPagetwo(),
               CoursesListScreen(),
-              const ExploreScreen(),
               const UploadProjectScreenForm(),
             ],
           ),
@@ -180,9 +178,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 _buildNavItem(Icons.home_rounded, 'Home', 0),
                 _buildNavItem(Icons.book_rounded, 'Courses', 1),
-                _buildNavItem(Icons.explore_rounded, 'Explore', 2),
-                _buildNavItem(Icons.rocket_launch_rounded, 'Projects', 3),
-                _buildNavItem(Icons.cloud_upload_rounded, 'Upload', 4),
+                _buildNavItem(Icons.rocket_launch_rounded, 'Projects', 2),
+                _buildNavItem(Icons.cloud_upload_rounded, 'Upload', 3),
               ],
             ),
           ),
@@ -200,7 +197,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlue.withOpacity(0.2) : Colors.transparent,
+          color: isSelected
+              ? AppColors.primaryBlue.withOpacity(0.2)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -208,13 +207,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.primaryBlue : AppColors.textSecondary,
+              color: isSelected
+                  ? AppColors.primaryBlue
+                  : AppColors.textSecondary,
               size: 28,
             ),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 300),
               style: TextStyle(
-                color: isSelected ? AppColors.primaryBlue : AppColors.textSecondary,
+                color: isSelected
+                    ? AppColors.primaryBlue
+                    : AppColors.textSecondary,
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
               ),
@@ -235,7 +238,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -273,15 +277,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+          ),
+        );
 
     _isMessageBarVisible = true;
     _showSkipButton = false;
@@ -401,7 +403,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final dateFormatter = DateFormat('EEEE, d MMMM yyyy');
     formattedDate = dateFormatter.format(now);
     final hour = now.hour;
-    greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+    greeting = hour < 12
+        ? 'Good Morning'
+        : hour < 17
+        ? 'Good Afternoon'
+        : 'Good Evening';
   }
 
   @override
@@ -412,7 +418,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   String _getInitials(String name) {
-    List<String> nameParts = name.split(' ').where((part) => part.isNotEmpty).toList();
+    List<String> nameParts = name
+        .split(' ')
+        .where((part) => part.isNotEmpty)
+        .toList();
     if (nameParts.length > 1) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
     } else if (name.isNotEmpty) {
@@ -466,7 +475,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryBlue,
+                            ),
                           ),
                           SizedBox(height: 16),
                           Text(
@@ -479,7 +490,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   );
                 }
 
-                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data!.isEmpty) {
                   // Auto-dismiss if ad fails to load
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     _skipAd();
@@ -519,63 +532,70 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       right: 20,
                       child: _showSkipButton
                           ? GestureDetector(
-                        onTap: _skipAd,
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(color: Colors.white.withOpacity(0.3)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                'Skip',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                              onTap: _skipAd,
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      'Skip',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      )
+                            )
                           : Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Skip in 5s',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Skip in 5s',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
 
                     // Ad content at bottom
@@ -597,7 +617,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white.withOpacity(0.2)),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.2),
+                              ),
                             ),
                             child: Column(
                               children: [
@@ -635,7 +657,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 elevation: 8,
                               ),
                               child: Text(
@@ -669,7 +693,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.gradientStart.withOpacity(0.9), AppColors.gradientEnd.withOpacity(0.9)],
+              colors: [
+                AppColors.gradientStart.withOpacity(0.9),
+                AppColors.gradientEnd.withOpacity(0.9),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -705,7 +732,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           value: innovationScore / 100,
                           strokeWidth: 8,
                           backgroundColor: Colors.white.withOpacity(0.2),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       ),
                       AnimatedSwitcher(
@@ -762,9 +791,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) =>  LearnHomePage(),
-          ),
+          MaterialPageRoute(builder: (context) => LearnHomePage()),
         );
       },
       child: Container(
@@ -868,11 +895,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child: Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+                  child: Icon(icon, color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: 12),
                 Padding(
@@ -904,307 +927,376 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     return SafeArea(
       child: Stack(
-          children: [
+        children: [
           AbsorbPointer(
-          absorbing: _isMessageBarVisible && !_hasShownAd,
-          child: BackdropFilter(
-          filter: ImageFilter.blur(
-          sigmaX: (_isMessageBarVisible && !_hasShownAd) ? 5.0 : 0.0,
-      sigmaY: (_isMessageBarVisible && !_hasShownAd) ? 5.0 : 0.0,
-    ),
-    child: SingleChildScrollView(
-    physics: const BouncingScrollPhysics(),
-    child: Padding(
-    padding: const EdgeInsets.all(20.0),
-    child: FadeTransition(
-    opacity: _fadeAnimation,
-    child: SlideTransition(
-    position: _slideAnimation,
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Text(
-    greeting,
-    style: TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.w500,
-    color: AppColors.textSecondary,
-    ),
-    ),
-    const SizedBox(height: 4),
-    Text(
-    displayName,
-    style: const TextStyle(
-    fontSize: 28,
-    fontWeight: FontWeight.bold,
-    color: AppColors.primaryBlue,
-    ),
-    maxLines: 1,
-    overflow: TextOverflow.ellipsis,
-    ),
-    const SizedBox(height: 8),
-    Text(
-    formattedDate,
-    style: const TextStyle(
-    fontSize: 14,
-    color: AppColors.textSecondary,
-    ),
-    ),
-    ],
-    ),
-    ),
-    Column(
-    children: [
-    GestureDetector(
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) => ProfileScreen(username: displayName),
-    ),
-    ).then((_) => _loadUserProfile());
-    },
-    child: Hero(
-    tag: 'profilePicture',
-    child: Container(
-    height: 56,
-    width: 56,
-    decoration: BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.all(color: AppColors.accentBlue, width: 2),
-    boxShadow: [
-    BoxShadow(
-    color: AppColors.shadowColor.withOpacity(0.1),
-    blurRadius: 8,
-    offset: const Offset(0, 2),
-    ),
-    ],
-    ),
-    child: _isOffline
-    ? CircleAvatar(
-    backgroundColor: Colors.grey.shade400,
-    child: Text(
-    _getInitials(displayName),
-    style: const TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontSize: 20,
-    ),
-    ),
-    )
-        : _isLoadingProfile
-    ? CircleAvatar(
-    backgroundColor: Colors.grey.shade200,
-    child: Text(
-    _getInitials(displayName),
-    style: const TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontSize: 20,
-    ),
-    ),
-    )
-        : _profileImageUrl != null && _profileImageUrl!.isNotEmpty
-    ? CircleAvatar(
-    backgroundColor: Colors.grey.shade200,
-    backgroundImage: NetworkImage(_profileImageUrl!),
-    )
-        : CircleAvatar(
-    backgroundColor: AppColors.primaryBlue,
-    child: Text(
-    _getInitials(displayName),
-    style: const TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontSize: 20,
-    ),
-    ),
-    ),
-    ),
-    ),
-    ),
-    if (_isLoadingProfile && !_isOffline)
-    const SizedBox(
-    width: 56,
-    child: LinearProgressIndicator(
-    backgroundColor: Colors.grey,
-    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
-    ),
-    ),
-    if (_isOffline)
-    const Padding(
-    padding: EdgeInsets.only(top: 8),
-    child: Text(
-    'No internet connection.\nPlease check your network.',
-    style: TextStyle(
-    color: AppColors.errorColor,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-    ),
-    textAlign: TextAlign.center,
-    ),
-    ),
-    ],
-    ),
-    ],
-    ),
-    const SizedBox(height: 28),
-    _buildScoreCard(),
-    const SizedBox(height: 28),
-    Text(
-    'Recommended Courses',
-    style: Theme.of(context).textTheme.headlineSmall,
-    ),
-    const SizedBox(height: 16),
-    SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    physics: const BouncingScrollPhysics(),
-    child: Row(
-    children: recommendedCourses
-        .map((course) => _buildRecommendedCourseCard(course))
-        .toList(),
-    ),
-    ),
-    const SizedBox(height: 28),
-    Text(
-    'Learning Resources',
-    style: Theme.of(context).textTheme.headlineSmall,
-    ),
-    const SizedBox(height: 16),
-    GridView.count(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    crossAxisCount: 3,
-    childAspectRatio: 0.85,
-    crossAxisSpacing: 16,
-    mainAxisSpacing: 16,
-    children: [
-    _buildGridItem(
-    title: 'Courses',
-    icon: Icons.school_rounded,
-    color: AppColors.gridColor1,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CoursesListScreen())),
-    ),
-    _buildGridItem(
-    title: 'C Submission',
-    icon: Icons.assignment_turned_in_rounded,
-    color: AppColors.gridColor2,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CourseForm())),
-    ),
-    _buildGridItem(
-    title: 'Learn',
-    icon: Icons.menu_book_rounded,
-    color: AppColors.gridColor3,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LearnHomePage())),
-    ),
-    _buildGridItem(
-    title: 'Jobs Upload',
-    icon: Icons.work_rounded,
-    color: AppColors.gridColor4,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const JobsPage())),
-    ),
-    _buildGridItem(
-    title: 'Explore Jobs',
-    icon: Icons.search_rounded,
-    color: AppColors.gridColor5,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ExploreJobsPage())),
-    ),
-    _buildGridItem(
-    title: 'Upload Project',
-    icon: Icons.cloud_upload_rounded,
-    color: AppColors.gridColor6,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => UploadProjectScreen())),
-    ),
-    _buildGridItem(
-    title: 'Mentors',
-    icon: Icons.person_pin_rounded,
-    color: AppColors.gridColor7,
-    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MentorPage())),
-    ),
-      _buildGridItem(
-        title: 'Startup',
-        icon: Icons.rocket_launch_rounded,
-        color: AppColors.gridColor7,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ExerciseForm())),
-      ),
-      _buildGridItem(
-        title: 'Ask Help',
-        icon: Icons.help_outline_rounded,
-        color: AppColors.gridColor8,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FocusLockScreen())),
-      ),
-      _buildGridItem(
-        title: 'Master',
-        icon: Icons.psychology_rounded,
-        color: AppColors.gridColor9,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Researchmaster())),
-      ),
-      _buildGridItem(
-        title: 'Leaderboard',
-        icon: Icons.leaderboard_rounded,
-        color: AppColors.gridColor9,
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LeaderboardPage())),
-      ),
-    ],
-    ),
-      const SizedBox(height: 80),
-    ],
-    ),
-    ),
-    ),
-    ),
-    ),
-          ),
-          ),
-
-            // FIXED: Ad StreamBuilder with proper state management
-            if (_isMessageBarVisible && !_hasShownAd)
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('ads')
-                    .orderBy('priority')
-                    .limit(1)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox.shrink();
-                  }
-                  if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    // No ads available, hide the message bar
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (mounted && _isMessageBarVisible && !_hasShownAd) {
-                        setState(() {
-                          _isMessageBarVisible = false;
-                          _hasShownAd = true;
-                        });
-                      }
-                    });
-                    return const SizedBox.shrink();
-                  }
-
-                  final ad = snapshot.data!.docs.first;
-                  final adData = {'id': ad.id, ...ad.data() as Map<String, dynamic>};
-
-                  // Only show ad once
-                  if (!_hasShownAd && _lastShownAdId != adData['id']) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (mounted && _isMessageBarVisible && !_hasShownAd) {
-                        _showFullScreenAd(adData, context);
-                      }
-                    });
-                  }
-
-                  return const SizedBox.shrink();
-                },
+            absorbing: _isMessageBarVisible && !_hasShownAd,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: (_isMessageBarVisible && !_hasShownAd) ? 5.0 : 0.0,
+                sigmaY: (_isMessageBarVisible && !_hasShownAd) ? 5.0 : 0.0,
               ),
-          ],
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      greeting,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      displayName,
+                                      style: const TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primaryBlue,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      formattedDate,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProfileScreen(
+                                            username: displayName,
+                                          ),
+                                        ),
+                                      ).then((_) => _loadUserProfile());
+                                    },
+                                    child: Hero(
+                                      tag: 'profilePicture',
+                                      child: Container(
+                                        height: 56,
+                                        width: 56,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.accentBlue,
+                                            width: 2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: AppColors.shadowColor
+                                                  .withOpacity(0.1),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: _isOffline
+                                            ? CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.grey.shade400,
+                                                child: Text(
+                                                  _getInitials(displayName),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              )
+                                            : _isLoadingProfile
+                                            ? CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.grey.shade200,
+                                                child: Text(
+                                                  _getInitials(displayName),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              )
+                                            : _profileImageUrl != null &&
+                                                  _profileImageUrl!.isNotEmpty
+                                            ? CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.grey.shade200,
+                                                backgroundImage: NetworkImage(
+                                                  _profileImageUrl!,
+                                                ),
+                                              )
+                                            : CircleAvatar(
+                                                backgroundColor:
+                                                    AppColors.primaryBlue,
+                                                child: Text(
+                                                  _getInitials(displayName),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (_isLoadingProfile && !_isOffline)
+                                    const SizedBox(
+                                      width: 56,
+                                      child: LinearProgressIndicator(
+                                        backgroundColor: Colors.grey,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              AppColors.primaryBlue,
+                                            ),
+                                      ),
+                                    ),
+                                  if (_isOffline)
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Text(
+                                        'No internet connection.\nPlease check your network.',
+                                        style: TextStyle(
+                                          color: AppColors.errorColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 28),
+                          _buildScoreCard(),
+                          const SizedBox(height: 28),
+                          Text(
+                            'Recommended Courses',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 16),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            child: Row(
+                              children: recommendedCourses
+                                  .map(
+                                    (course) =>
+                                        _buildRecommendedCourseCard(course),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+                          Text(
+                            'Learning Resources',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 16),
+                          GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 3,
+                            childAspectRatio: 0.85,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            children: [
+                              _buildGridItem(
+                                title: 'Courses',
+                                icon: Icons.school_rounded,
+                                color: AppColors.gridColor1,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CoursesListScreen(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'C Submission',
+                                icon: Icons.assignment_turned_in_rounded,
+                                color: AppColors.gridColor2,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CourseForm(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Learn',
+                                icon: Icons.menu_book_rounded,
+                                color: AppColors.gridColor3,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LearnHomePage(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Jobs Upload',
+                                icon: Icons.work_rounded,
+                                color: AppColors.gridColor4,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const JobsPage(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Upload Project',
+                                icon: Icons.cloud_upload_rounded,
+                                color: AppColors.gridColor6,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UploadProjectScreen(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Mentors',
+                                icon: Icons.person_pin_rounded,
+                                color: AppColors.gridColor7,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const MentorPage(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Startup',
+                                icon: Icons.rocket_launch_rounded,
+                                color: AppColors.gridColor7,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ExerciseForm(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Ask Help',
+                                icon: Icons.help_outline_rounded,
+                                color: AppColors.gridColor8,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FocusLockScreen(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Master',
+                                icon: Icons.psychology_rounded,
+                                color: AppColors.gridColor9,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Researchmaster(),
+                                  ),
+                                ),
+                              ),
+                              _buildGridItem(
+                                title: 'Leaderboard',
+                                icon: Icons.leaderboard_rounded,
+                                color: AppColors.gridColor9,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const LeaderboardPage(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 80),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // FIXED: Ad StreamBuilder with proper state management
+          if (_isMessageBarVisible && !_hasShownAd)
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('ads')
+                  .orderBy('priority')
+                  .limit(1)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox.shrink();
+                }
+                if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data!.docs.isEmpty) {
+                  // No ads available, hide the message bar
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted && _isMessageBarVisible && !_hasShownAd) {
+                      setState(() {
+                        _isMessageBarVisible = false;
+                        _hasShownAd = true;
+                      });
+                    }
+                  });
+                  return const SizedBox.shrink();
+                }
+
+                final ad = snapshot.data!.docs.first;
+                final adData = {
+                  'id': ad.id,
+                  ...ad.data() as Map<String, dynamic>,
+                };
+
+                // Only show ad once
+                if (!_hasShownAd && _lastShownAdId != adData['id']) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted && _isMessageBarVisible && !_hasShownAd) {
+                      _showFullScreenAd(adData, context);
+                    }
+                  });
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+        ],
       ),
     );
   }
@@ -1298,7 +1390,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                     radius: 64,
                     backgroundColor: AppColors.primaryBlue,
                     child: Text(
-                      widget.FullName.isNotEmpty ? widget.FullName[0].toUpperCase() : '',
+                      widget.FullName.isNotEmpty
+                          ? widget.FullName[0].toUpperCase()
+                          : '',
                       style: const TextStyle(
                         fontSize: 48,
                         color: Colors.white,
@@ -1319,7 +1413,10 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                       ],
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.camera_alt, color: AppColors.primaryBlue),
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: AppColors.primaryBlue,
+                      ),
                       onPressed: () {},
                     ),
                   ),
@@ -1330,13 +1427,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Full Name',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   prefixIcon: Icon(Icons.person, color: AppColors.primaryBlue),
                   filled: true,
                   fillColor: AppColors.veryLightBlue,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryBlue,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
@@ -1344,13 +1446,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Email Address',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   prefixIcon: Icon(Icons.email, color: AppColors.primaryBlue),
                   filled: true,
                   fillColor: AppColors.veryLightBlue,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryBlue,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
@@ -1358,14 +1465,19 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Bio',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   prefixIcon: Icon(Icons.info, color: AppColors.primaryBlue),
                   alignLabelWithHint: true,
                   filled: true,
                   fillColor: AppColors.veryLightBlue,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryBlue,
+                      width: 2,
+                    ),
                   ),
                 ),
                 maxLines: 3,
@@ -1374,13 +1486,21 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Skills (comma separated)',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: Icon(Icons.psychology, color: AppColors.primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.psychology,
+                    color: AppColors.primaryBlue,
+                  ),
                   filled: true,
                   fillColor: AppColors.veryLightBlue,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryBlue,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
@@ -1392,7 +1512,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryBlue,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 3,
                     shadowColor: AppColors.shadowColor.withOpacity(0.3),
                   ),

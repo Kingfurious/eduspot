@@ -9,13 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:ui';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Import the new settings screen
 import 'profile_settings_screen.dart';
 // Import other necessary screens/utils
-import 'holographic_post_view.dart'; // For navigating from saved posts
-import 'CommentScreen.dart'; // Potentially needed if saved posts link to comments
+// Potentially needed if saved posts link to comments
 import 'chat_screen.dart'; // Add this import for ChatScreen
+import 'package:eduspark/ProfileScreen.dart'; // For navigating from saved posts
 
 // App color palette
 class AppColors {
@@ -51,14 +52,16 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProviderStateMixin {
+class _ProfileScreenState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = true;
   Map<String, dynamic>? _profileData;
   String? _currentUserId;
   String? _viewedUserId;
   late TabController _tabController;
 
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -106,8 +109,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       // Get current user data for fallback
       User? currentUser = FirebaseAuth.instance.currentUser;
       String initialName = widget.username;
-      String? initialEmail = widget.isCurrentUser ? currentUser?.email : 'Not specified';
-      String? initialPhotoURL = widget.isCurrentUser ? currentUser?.photoURL : null;
+      String? initialEmail =
+          widget.isCurrentUser ? currentUser?.email : 'Not specified';
+      String? initialPhotoURL =
+          widget.isCurrentUser ? currentUser?.photoURL : null;
 
       // Set initial profile data with Firebase Auth fallback
       Map<String, dynamic> initialProfileData = {
@@ -150,9 +155,11 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             'fullName': data['fullName'] ?? data['name'] ?? initialName,
             'email': data['email'] ?? initialEmail ?? 'Not specified',
             'bio': data['bio'] ?? 'Innovation Enthusiast',
-            'imageUrl': data['imageUrl'] ?? data['profileImageUrl'] ?? initialPhotoURL,
+            'imageUrl':
+                data['imageUrl'] ?? data['profileImageUrl'] ?? initialPhotoURL,
             'phoneNumber': data['phoneNumber'] ?? 'Not specified',
-            'collegeName': data['collegeName'] ?? data['college'] ?? 'Not specified',
+            'collegeName':
+                data['collegeName'] ?? data['college'] ?? 'Not specified',
             'department': data['department'] ?? 'Not specified',
             'year': data['year'] ?? 'Not specified',
             'primarySkill': data['primarySkill'] ?? 'Not specified',
@@ -164,7 +171,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           };
         });
       } else {
-        print('⚠️ Profile document not found in studentprofile for userId: $userId');
+        print(
+            '⚠️ Profile document not found in studentprofile for userId: $userId');
         // Try to load from users collection as fallback
         try {
           final DocumentSnapshot userDoc = await FirebaseFirestore.instance
@@ -173,7 +181,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               .get();
 
           if (userDoc.exists && mounted) {
-            Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+            Map<String, dynamic> userData =
+                userDoc.data() as Map<String, dynamic>;
             print("📄 Found fallback data in users collection");
 
             setState(() {
@@ -225,7 +234,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
         setState(() {
           _profileData = {
             'fullName': widget.username,
-            'email': widget.isCurrentUser ? (FirebaseAuth.instance.currentUser?.email ?? 'Error loading profile') : 'Not specified',
+            'email': widget.isCurrentUser
+                ? (FirebaseAuth.instance.currentUser?.email ??
+                    'Error loading profile')
+                : 'Not specified',
             'bio': 'Could not load details.',
             'imageUrl': null,
             'phoneNumber': 'Not specified',
@@ -252,7 +264,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       dataToSave['uid'] = _currentUserId;
       dataToSave['updatedAt'] = FieldValue.serverTimestamp();
 
-      if (dataToSave.containsKey('fullName') && dataToSave['fullName'] != null) {
+      if (dataToSave.containsKey('fullName') &&
+          dataToSave['fullName'] != null) {
         await FirebaseFirestore.instance
             .collection('studentprofile')
             .doc(_currentUserId)
@@ -264,7 +277,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             await user.updateDisplayName(_profileData!['fullName']);
           }
 
-          if (user.photoURL != _profileData!['imageUrl'] && _profileData!['imageUrl'] != null) {
+          if (user.photoURL != _profileData!['imageUrl'] &&
+              _profileData!['imageUrl'] != null) {
             await user.updatePhotoURL(_profileData!['imageUrl']);
           }
         }
@@ -277,7 +291,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
 
   Future<void> _selectProfilePicture() async {
     if (_currentUserId == null) {
-      _showCustomSnackBar('You need to be logged in to change profile picture', isError: true);
+      _showCustomSnackBar('You need to be logged in to change profile picture',
+          isError: true);
       return;
     }
 
@@ -352,7 +367,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
 
   Future<void> _selectAndUploadCoverPicture() async {
     if (_currentUserId == null) {
-      _showCustomSnackBar('You need to be logged in to change cover picture', isError: true);
+      _showCustomSnackBar('You need to be logged in to change cover picture',
+          isError: true);
       return;
     }
 
@@ -480,14 +496,19 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       }
 
       final File imageFile = File(pickedFile.path);
-      final String fileName = 'profile_${_currentUserId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final Reference storageRef = FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
+      final String fileName =
+          'profile_${_currentUserId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
       final UploadTask uploadTask = storageRef.putFile(imageFile);
 
       final TaskSnapshot taskSnapshot = await uploadTask;
       final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-      await FirebaseFirestore.instance.collection('studentprofile').doc(_currentUserId).update({
+      await FirebaseFirestore.instance
+          .collection('studentprofile')
+          .doc(_currentUserId)
+          .update({
         'imageUrl': downloadUrl,
       });
 
@@ -504,7 +525,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       print('Error uploading profile picture: $e');
       if (mounted) {
         setState(() => _isLoading = false);
-        _showCustomSnackBar('Error updating profile picture: $e', isError: true);
+        _showCustomSnackBar('Error updating profile picture: $e',
+            isError: true);
       }
     }
   }
@@ -525,14 +547,19 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       }
 
       final File imageFile = File(pickedFile.path);
-      final String fileName = 'cover_${_currentUserId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final Reference storageRef = FirebaseStorage.instance.ref().child('cover_pictures/$fileName');
+      final String fileName =
+          'cover_${_currentUserId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('cover_pictures/$fileName');
       final UploadTask uploadTask = storageRef.putFile(imageFile);
 
       final TaskSnapshot taskSnapshot = await uploadTask;
       final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-      await FirebaseFirestore.instance.collection('studentprofile').doc(_currentUserId).update({
+      await FirebaseFirestore.instance
+          .collection('studentprofile')
+          .doc(_currentUserId)
+          .update({
         'coverImageUrl': downloadUrl,
       });
 
@@ -673,7 +700,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             if (widget.isCurrentUser) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProfileSettingsScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const ProfileSettingsScreen()),
               );
             } else {
               _showUserOptions();
@@ -695,27 +723,28 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               },
               child: coverImageUrl != null && coverImageUrl.isNotEmpty
                   ? CachedNetworkImage(
-                imageUrl: coverImageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(color: Colors.grey[300]),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[300],
-                  child: Icon(Icons.error, color: AppColors.errorColor),
-                ),
-              )
+                      imageUrl: coverImageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          Container(color: Colors.grey[300]),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[300],
+                        child: Icon(Icons.error, color: AppColors.errorColor),
+                      ),
+                    )
                   : Container(
-                color: Colors.grey[300],
-                child: Center(
-                  child: Text(
-                    'Add Cover Picture',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[300],
+                      child: Center(
+                        child: Text(
+                          'Add Cover Picture',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
             // Gradient overlay
             Container(
@@ -797,7 +826,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                         color: Colors.black12,
                         child: Center(
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primaryBlue),
                           ),
                         ),
                       ),
@@ -853,87 +883,89 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     String? imageUrl = _profileData!['imageUrl'];
 
     return GestureDetector(
-        onTap: () {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-            _showFullProfileImage(imageUrl);
-          }
-        },
-        child: Stack(
-          alignment: Alignment.bottomRight,
-          children: [
+      onTap: () {
+        if (imageUrl != null && imageUrl.isNotEmpty) {
+          _showFullProfileImage(imageUrl);
+        }
+      },
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
           Container(
-          height: 120,
-          width: 120,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadowColor.withOpacity(0.2),
-                blurRadius: 10,
-                spreadRadius: 1,
-                offset: Offset(0, 1),
-              ),
-            ],
-          ),
-          padding: EdgeInsets.all(4),
-          child: Container(
+            height: 120,
+            width: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.veryLightBlue,
-              image: (imageUrl != null && imageUrl.isNotEmpty)
-                  ? DecorationImage(
-                image: CachedNetworkImageProvider(imageUrl),
-                fit: BoxFit.cover,
-              )
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.shadowColor.withOpacity(0.2),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                  offset: Offset(0, 1),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.all(4),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.veryLightBlue,
+                image: (imageUrl != null && imageUrl.isNotEmpty)
+                    ? DecorationImage(
+                        image: CachedNetworkImageProvider(imageUrl),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: (imageUrl == null || imageUrl.isEmpty)
+                  ? Center(
+                      child: Text(
+                        _getInitials(),
+                        style: TextStyle(
+                          fontSize: 40,
+                          color: AppColors.primaryBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
                   : null,
             ),
-            child: (imageUrl == null || imageUrl.isEmpty)
-                ? Center(
-              child: Text(
-                _getInitials(),
-                style: TextStyle(
-                  fontSize: 40,
-                  color: AppColors.primaryBlue,
-                  fontWeight: FontWeight.bold,
+          ),
+          if (widget.isCurrentUser)
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: InkWell(
+                onTap: _selectProfilePicture,
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.accentBlue,
+                    border: Border.all(color: Colors.white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadowColor.withOpacity(0.2),
+                        blurRadius: 5,
+                        spreadRadius: 0,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.camera_alt,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
               ),
-            )
-                : null,
-          ),
-        ),
-        if (widget.isCurrentUser)
-    Positioned(
-        bottom: 0,
-        right: 0,
-        child: InkWell(
-        onTap: _selectProfilePicture,
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.accentBlue,
-            border: Border.all(color: Colors.white, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadowColor.withOpacity(0.2),
-                blurRadius: 5,
-                spreadRadius: 0,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.camera_alt,
-            color: Colors.white,
-            size: 16,
-          ),
-        ),
-        ),
-    ),
-          ],
-        ).animate().fadeIn(duration: 500.ms).scale(
-            delay: 200.ms, begin: Offset(0.8, 0.8)),
+            ),
+        ],
+      )
+          .animate()
+          .fadeIn(duration: 500.ms)
+          .scale(delay: 200.ms, begin: Offset(0.8, 0.8)),
     );
   }
 
@@ -957,7 +989,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                       color: Colors.black12,
                       child: Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryBlue),
                         ),
                       ),
                     ),
@@ -1063,7 +1096,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
   String _getInitials() {
     if (_profileData == null) return '?';
     String name = _profileData!['fullName'] ?? widget.username;
-    List<String> nameParts = name.split(' ').where((part) => part.isNotEmpty).toList();
+    List<String> nameParts =
+        name.split(' ').where((part) => part.isNotEmpty).toList();
     if (nameParts.length > 1) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
     } else if (name.isNotEmpty) {
@@ -1093,7 +1127,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           labelColor: AppColors.primaryBlue,
           unselectedLabelColor: AppColors.textSecondary,
           labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
+          unselectedLabelStyle:
+              TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
           indicator: BoxDecoration(
             color: AppColors.veryLightBlue,
             borderRadius: BorderRadius.circular(12),
@@ -1182,7 +1217,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             value: _profileData!['careerGoal'] ?? 'Not specified',
           ),
           // Display skills if available
-          if (_profileData!['skills'] != null && (_profileData!['skills'] as List).isNotEmpty)
+          if (_profileData!['skills'] != null &&
+              (_profileData!['skills'] as List).isNotEmpty)
             _buildSkillsItem(),
           SizedBox(height: 24),
           _buildActionButtons(),
@@ -1221,7 +1257,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                   color: Colors.purple.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.psychology_outlined, color: Colors.purple, size: 22),
+                child: Icon(Icons.psychology_outlined,
+                    color: Colors.purple, size: 22),
               ),
               SizedBox(width: 16),
               Text(
@@ -1237,26 +1274,33 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: skills.map((skill) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.veryLightBlue,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primaryBlue.withOpacity(0.3)),
-              ),
-              child: Text(
-                skill.toString(),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primaryBlue,
-                ),
-              ),
-            )).toList(),
+            children: skills
+                .map((skill) => Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.veryLightBlue,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                            color: AppColors.primaryBlue.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        skill.toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primaryBlue,
+                        ),
+                      ),
+                    ))
+                .toList(),
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 500.ms, delay: 100.ms).slideX(begin: 0.05, end: 0);
+    )
+        .animate()
+        .fadeIn(duration: 500.ms, delay: 100.ms)
+        .slideX(begin: 0.05, end: 0);
   }
 
   Widget _buildInfoItem({
@@ -1310,8 +1354,11 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: isNotSpecified ? AppColors.textSecondary : AppColors.textPrimary,
-                    fontStyle: isNotSpecified ? FontStyle.italic : FontStyle.normal,
+                    color: isNotSpecified
+                        ? AppColors.textSecondary
+                        : AppColors.textPrimary,
+                    fontStyle:
+                        isNotSpecified ? FontStyle.italic : FontStyle.normal,
                   ),
                 ),
               ],
@@ -1319,7 +1366,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 500.ms, delay: 100.ms).slideX(begin: 0.05, end: 0);
+    )
+        .animate()
+        .fadeIn(duration: 500.ms, delay: 100.ms)
+        .slideX(begin: 0.05, end: 0);
   }
 
   Widget _buildPortfolioSection() {
@@ -1351,7 +1401,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                         context,
                         MaterialPageRoute(
                           builder: (context) => CreateProfilePage(
-                            FullName: _profileData!['fullName'] ?? widget.username,
+                            FullName:
+                                _profileData!['fullName'] ?? widget.username,
                           ),
                         ),
                       ).then((_) => _initializeData());
@@ -1363,7 +1414,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                       color: AppColors.veryLightBlue,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.add, color: AppColors.primaryBlue, size: 18),
+                    child:
+                        Icon(Icons.add, color: AppColors.primaryBlue, size: 18),
                   ),
                   tooltip: 'Add portfolio link',
                 ),
@@ -1415,7 +1467,9 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           ),
           SizedBox(height: 24),
           Text(
-            widget.isCurrentUser ? 'No Portfolio Links Yet' : 'No Portfolio Links',
+            widget.isCurrentUser
+                ? 'No Portfolio Links Yet'
+                : 'No Portfolio Links',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -1577,7 +1631,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                       color: AppColors.veryLightBlue,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.open_in_new_rounded, color: AppColors.primaryBlue, size: 16),
+                    child: Icon(Icons.open_in_new_rounded,
+                        color: AppColors.primaryBlue, size: 16),
                   ),
                 ],
               ),
@@ -1585,7 +1640,10 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideX(begin: 0.1, end: 0);
+    )
+        .animate()
+        .fadeIn(duration: 500.ms, delay: 150.ms)
+        .slideX(begin: 0.1, end: 0);
   }
 
   Widget _buildActivitiesTab() {
@@ -1841,7 +1899,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey.shade400, size: 16),
+                  Icon(Icons.arrow_forward_ios_rounded,
+                      color: Colors.grey.shade400, size: 16),
                 ],
               ),
             ),
@@ -1898,7 +1957,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                   );
                 },
               ),
-              Divider(height: 1, thickness: 1, indent: 64, color: Colors.grey[200]),
+              Divider(
+                  height: 1, thickness: 1, indent: 64, color: Colors.grey[200]),
               _buildOptionItem(
                 icon: Icons.block_outlined,
                 title: 'Block User',
@@ -2136,91 +2196,92 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       backgroundColor: AppColors.background,
       body: _isLoading
           ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
-                strokeWidth: 3,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              "Loading profile...",
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      )
-          : _profileData == null
-          ? _buildErrorScreen()
-          : Stack(
-        children: [
-          RefreshIndicator(
-            key: _refreshIndicatorKey,
-            onRefresh: _initializeData,
-            color: AppColors.primaryBlue,
-            child: CustomScrollView(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                _buildSliverAppBar(),
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 16),
-                      _buildProfileAvatar(),
-                      SizedBox(height: 24),
-                      _buildProfileInfo(),
-                      SizedBox(height: 24),
-                    ],
-                  ),
-                ),
-                _buildTabBar(),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    child: TabBarView(
-                      controller: _tabController,
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        _buildInfoSection(),
-                        _buildPortfolioSection(),
-                        _buildActivitiesTab(),
-                      ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+                      strokeWidth: 3,
                     ),
                   ),
+                  SizedBox(height: 20),
+                  Text(
+                    "Loading profile...",
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : _profileData == null
+              ? _buildErrorScreen()
+              : Stack(
+                  children: [
+                    RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      onRefresh: _initializeData,
+                      color: AppColors.primaryBlue,
+                      child: CustomScrollView(
+                        controller: _scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        slivers: [
+                          _buildSliverAppBar(),
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                SizedBox(height: 16),
+                                _buildProfileAvatar(),
+                                SizedBox(height: 24),
+                                _buildProfileInfo(),
+                                SizedBox(height: 24),
+                              ],
+                            ),
+                          ),
+                          _buildTabBar(),
+                          SliverToBoxAdapter(
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.5,
+                              child: TabBarView(
+                                controller: _tabController,
+                                physics: const BouncingScrollPhysics(),
+                                children: [
+                                  _buildInfoSection(),
+                                  _buildPortfolioSection(),
+                                  _buildActivitiesTab(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
       floatingActionButton: widget.isCurrentUser
           ? FloatingActionButton(
-        onPressed: () {
-          if (_profileData != null && _currentUserId != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CreateProfilePage(
-                  FullName: _profileData!['fullName'] ?? widget.username,
-                ),
-              ),
-            ).then((_) => _initializeData());
-          }
-        },
-        backgroundColor: AppColors.primaryBlue,
-        elevation: 9,
-        child: Icon(Icons.edit, color: Colors.white),
-      )
+              onPressed: () {
+                if (_profileData != null && _currentUserId != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateProfilePage(
+                        FullName: _profileData!['fullName'] ?? widget.username,
+                      ),
+                    ),
+                  ).then((_) => _initializeData());
+                }
+              },
+              backgroundColor: AppColors.primaryBlue,
+              elevation: 9,
+              child: Icon(Icons.edit, color: Colors.white),
+            )
           : null,
     );
   }
@@ -2237,8 +2298,8 @@ class WavePainter extends CustomPainter {
     final path = Path();
 
     path.moveTo(0, size.height * 0.7);
-    path.quadraticBezierTo(
-        size.width * 0.25, size.height * 0.5, size.width * 0.5, size.height * 0.7);
+    path.quadraticBezierTo(size.width * 0.25, size.height * 0.5,
+        size.width * 0.5, size.height * 0.7);
     path.quadraticBezierTo(
         size.width * 0.75, size.height * 0.9, size.width, size.height * 0.6);
     path.lineTo(size.width, size.height);
@@ -2253,8 +2314,8 @@ class WavePainter extends CustomPainter {
 
     final path2 = Path();
     path2.moveTo(0, size.height * 0.8);
-    path2.quadraticBezierTo(
-        size.width * 0.3, size.height * 0.9, size.width * 0.55, size.height * 0.65);
+    path2.quadraticBezierTo(size.width * 0.3, size.height * 0.9,
+        size.width * 0.55, size.height * 0.65);
     path2.quadraticBezierTo(
         size.width * 0.8, size.height * 0.4, size.width, size.height * 0.7);
     path2.lineTo(size.width, size.height);
@@ -2327,7 +2388,9 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
 
   void _onFocusChange() {
     Future.delayed(Duration(milliseconds: 300), () {
-      if (_bioFocusNode.hasFocus || _careerGoalFocusNode.hasFocus || _portfolioLinksFocusNode.hasFocus) {
+      if (_bioFocusNode.hasFocus ||
+          _careerGoalFocusNode.hasFocus ||
+          _portfolioLinksFocusNode.hasFocus) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
@@ -2374,7 +2437,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         if (doc.exists) {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           _nameController.text = data['fullName'] ?? widget.FullName;
-          _emailController.text = data['email'] ?? FirebaseAuth.instance.currentUser?.email ?? '';
+          _emailController.text =
+              data['email'] ?? FirebaseAuth.instance.currentUser?.email ?? '';
           _bioController.text = data['bio'] ?? '';
           _collegeController.text = data['collegeName'] ?? '';
           _yearController.text = data['year'] ?? '';
@@ -2396,7 +2460,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
           }
 
           if (data['portfolioLinks'] is List) {
-            _portfolioLinksController.text = (data['portfolioLinks'] as List).join('\n');
+            _portfolioLinksController.text =
+                (data['portfolioLinks'] as List).join('\n');
           } else {
             _portfolioLinksController.text = '';
           }
@@ -2411,7 +2476,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
             });
           }
         } else {
-          _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
+          _emailController.text =
+              FirebaseAuth.instance.currentUser?.email ?? '';
           setState(() {
             _hasChangedName = false;
             _originalName = widget.FullName;
@@ -2426,7 +2492,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     }
   }
 
-  void _showSnackBar(String message, {bool isError = false, Duration? duration}) {
+  void _showSnackBar(String message,
+      {bool isError = false, Duration? duration}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -2594,8 +2661,10 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) return null;
 
-      final String fileName = 'profile_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final Reference storageRef = FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
+      final String fileName =
+          'profile_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('profile_pictures/$fileName');
       final UploadTask uploadTask = storageRef.putFile(_selectedImage!);
       final TaskSnapshot taskSnapshot = await uploadTask;
       final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -2623,7 +2692,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         if (_nameController.text.trim() != _originalName && _hasChangedName) {
           setState(() => _isLoading = false);
           _showSnackBar(
-            'You can only change your name once for post consistency.',
+            'You can only change your name once for consistency.',
             isError: true,
             duration: Duration(seconds: 3),
           );
@@ -2675,8 +2744,10 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
             .doc(userId)
             .set(profileData, SetOptions(merge: true));
 
-        if (FirebaseAuth.instance.currentUser?.displayName != _nameController.text.trim()) {
-          await FirebaseAuth.instance.currentUser?.updateDisplayName(_nameController.text.trim());
+        if (FirebaseAuth.instance.currentUser?.displayName !=
+            _nameController.text.trim()) {
+          await FirebaseAuth.instance.currentUser
+              ?.updateDisplayName(_nameController.text.trim());
         }
 
         if (mounted) {
@@ -2686,14 +2757,17 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       }
     } catch (e) {
       print('Error saving profile: $e');
-      if (mounted) _showSnackBar('Failed to update profile: ${e.toString()}', isError: true);
+      if (mounted)
+        _showSnackBar('Failed to update profile: ${e.toString()}',
+            isError: true);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   String _getInitials(String name) {
-    List<String> nameParts = name.split(' ').where((part) => part.isNotEmpty).toList();
+    List<String> nameParts =
+        name.split(' ').where((part) => part.isNotEmpty).toList();
     if (nameParts.length > 1) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
     } else if (name.isNotEmpty) {
@@ -2705,277 +2779,295 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
         title: Text(
-        'Edit Profile',
-        style: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-    ),
-    ),
-    backgroundColor: AppColors.primaryBlue,
-    elevation: 0,
-    leading: IconButton(
-    icon: Container(
-    padding: EdgeInsets.all(8),
-    decoration: BoxDecoration(
-    color: Colors.white.withOpacity(0.2),
-    shape: BoxShape.circle,
-    ),
-    child: Icon(Icons.arrow_back, color: Colors.white, size: 18),
-    ),
-    onPressed: () => Navigator.pop(context),
-    ),
-    actions: [
-    TextButton.icon(
-    icon: Icon(Icons.save_outlined, color: Colors.white),
-    label: Text(
-    'Save',
-    style: TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    onPressed: _isLoading ? null : _saveProfile,
-    style: TextButton.styleFrom(
-    backgroundColor: Colors.white.withOpacity(0.2),
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(20),
-    ),
-    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    ),
-    ),
-    SizedBox(width: 12),
-    ],
-    ),
-    body: _isLoading
-    ? const Center(child: CircularProgressIndicator(color: AppColors.primaryBlue))
-        : Form(
-    key: _formKey,
-    child: SingleChildScrollView(
-    controller: _scrollController,
-    physics: BouncingScrollPhysics(),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-    Container(
-    height: 100,
-    decoration: BoxDecoration(
-    gradient: LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [AppColors.primaryBlue, AppColors.background],
-    ),
-    ),
-    ),
-    Transform.translate(
-    offset: Offset(0, -60),
-    child: Center(
-    child: Stack(
-    alignment: Alignment.bottomRight,
-    children: [
-    Container(
-    width: 120,
-    height: 120,
-    decoration: BoxDecoration(
-    shape: BoxShape.circle,
-    color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: AppColors.shadowColor.withOpacity(0.2),
-          blurRadius: 10,
-          spreadRadius: 1,
-        ),
-      ],
-    ),
-      padding: EdgeInsets.all(4),
-      child: GestureDetector(
-        onTap: () {
-          if (_selectedImage != null || (_currentImageUrl != null && _currentImageUrl!.isNotEmpty)) {
-            _showFullImagePreview();
-          } else {
-            _selectProfilePicture();
-          }
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.veryLightBlue,
-            image: _selectedImage != null
-                ? DecorationImage(
-              image: FileImage(_selectedImage!),
-              fit: BoxFit.cover,
-            )
-                : _currentImageUrl != null && _currentImageUrl!.isNotEmpty
-                ? DecorationImage(
-              image: CachedNetworkImageProvider(_currentImageUrl!),
-              fit: BoxFit.cover,
-            )
-                : null,
+          'Edit Profile',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
-          child: (_selectedImage == null && (_currentImageUrl == null || _currentImageUrl!.isEmpty))
-              ? Center(
-            child: Text(
-              _getInitials(_nameController.text),
+        ),
+        backgroundColor: AppColors.primaryBlue,
+        elevation: 0,
+        leading: IconButton(
+          icon: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.arrow_back, color: Colors.white, size: 18),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          TextButton.icon(
+            icon: Icon(Icons.save_outlined, color: Colors.white),
+            label: Text(
+              'Save',
               style: TextStyle(
-                fontSize: 40,
-                color: AppColors.primaryBlue,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          )
-              : null,
-        ),
-      ),
-    ),
-      InkWell(
-        onTap: _selectProfilePicture,
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.accentBlue,
-            border: Border.all(color: Colors.white, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadowColor.withOpacity(0.2),
-                blurRadius: 5,
-                spreadRadius: 0,
-                offset: Offset(0, 2),
+            onPressed: _isLoading ? null : _saveProfile,
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white.withOpacity(0.2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-            ],
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
           ),
-          child: Icon(
-            Icons.camera_alt,
-            color: Colors.white,
-            size: 16,
-          ),
-        ),
+          SizedBox(width: 12),
+        ],
       ),
-    ],
-    ),
-    ),
-    ),
-      Transform.translate(
-        offset: Offset(0, -40),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionHeader('Personal Information', Icons.person_outline),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _nameController,
-                label: 'Full Name',
-                icon: Icons.person_outline,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Name cannot be empty';
-                  }
-                  if (value.length < 3) {
-                    return 'Name must be at least 3 characters';
-                  }
-                  if (value.trim() != _originalName && _hasChangedName) {
-                    return 'You can only change your name once';
-                  }
-                  return null;
-                },
-                infoText: _hasChangedName
-                    ? 'You have already used your one-time name change.'
-                    : 'Note: You can only change your name once for consistency across posts.',
-                enabled: !_hasChangedName || _nameController.text.trim() == _originalName,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryBlue))
+          : Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [AppColors.primaryBlue, AppColors.background],
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: Offset(0, -60),
+                      child: Center(
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        AppColors.shadowColor.withOpacity(0.2),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.all(4),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (_selectedImage != null ||
+                                      (_currentImageUrl != null &&
+                                          _currentImageUrl!.isNotEmpty)) {
+                                    _showFullImagePreview();
+                                  } else {
+                                    _selectProfilePicture();
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.veryLightBlue,
+                                    image: _selectedImage != null
+                                        ? DecorationImage(
+                                            image: FileImage(_selectedImage!),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : _currentImageUrl != null &&
+                                                _currentImageUrl!.isNotEmpty
+                                            ? DecorationImage(
+                                                image:
+                                                    CachedNetworkImageProvider(
+                                                        _currentImageUrl!),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                  ),
+                                  child: (_selectedImage == null &&
+                                          (_currentImageUrl == null ||
+                                              _currentImageUrl!.isEmpty))
+                                      ? Center(
+                                          child: Text(
+                                            _getInitials(_nameController.text),
+                                            style: TextStyle(
+                                              fontSize: 40,
+                                              color: AppColors.primaryBlue,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: _selectProfilePicture,
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.accentBlue,
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.shadowColor
+                                          .withOpacity(0.2),
+                                      blurRadius: 5,
+                                      spreadRadius: 0,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: Offset(0, -40),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildSectionHeader(
+                                'Personal Information', Icons.person_outline),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _nameController,
+                              label: 'Full Name',
+                              icon: Icons.person_outline,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Name cannot be empty';
+                                }
+                                if (value.length < 3) {
+                                  return 'Name must be at least 3 characters';
+                                }
+                                if (value.trim() != _originalName &&
+                                    _hasChangedName) {
+                                  return 'You can only change your name once';
+                                }
+                                return null;
+                              },
+                              infoText: _hasChangedName
+                                  ? 'You have already used your one-time name change.'
+                                  : 'Note: You can only change your name once for consistency across posts.',
+                              enabled: !_hasChangedName ||
+                                  _nameController.text.trim() == _originalName,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _emailController,
+                              label: 'Email Address',
+                              icon: Icons.email_outlined,
+                              keyboardType: TextInputType.emailAddress,
+                              enabled: false,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _phoneNumberController,
+                              label: 'Phone Number (Optional)',
+                              icon: Icons.phone_outlined,
+                              keyboardType: TextInputType.phone,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _bioController,
+                              label: 'Bio',
+                              icon: Icons.info_outline,
+                              maxLines: 4,
+                              hint: 'Tell others about yourself...',
+                              focusNode: _bioFocusNode,
+                            ),
+                            SizedBox(height: 24),
+                            _buildSectionHeader(
+                                'Education', Icons.school_outlined),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _collegeController,
+                              label: 'College Name',
+                              icon: Icons.school_outlined,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _yearController,
+                              label: 'Year of Study',
+                              icon: Icons.calendar_today_outlined,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _departmentController,
+                              label: 'Department/Branch',
+                              icon: Icons.work_outline,
+                            ),
+                            SizedBox(height: 24),
+                            _buildSectionHeader(
+                                'Skills & Goals', Icons.lightbulb_outline),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _primarySkillController,
+                              label: 'Primary Skill',
+                              icon: Icons.lightbulb_outline,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _careerGoalController,
+                              label: 'Career Goal',
+                              icon: Icons.flag_outlined,
+                              maxLines: 3,
+                              focusNode: _careerGoalFocusNode,
+                            ),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _skillsController,
+                              label: 'Skills (comma separated)',
+                              icon: Icons.psychology_outlined,
+                              hint: 'e.g., Flutter, Python, UI/UX',
+                            ),
+                            SizedBox(height: 24),
+                            _buildSectionHeader(
+                                'Portfolio Links', Icons.link_outlined),
+                            SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _portfolioLinksController,
+                              label: 'Portfolio Links (one per line)',
+                              icon: Icons.link_outlined,
+                              maxLines: 5,
+                              hint:
+                                  'e.g., https://github.com/...\nhttps://linkedin.com/...',
+                              focusNode: _portfolioLinksFocusNode,
+                            ),
+                            SizedBox(height: 30),
+                            _buildSaveButton(),
+                            SizedBox(height: 40),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _emailController,
-                label: 'Email Address',
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-                enabled: false,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _phoneNumberController,
-                label: 'Phone Number (Optional)',
-                icon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _bioController,
-                label: 'Bio',
-                icon: Icons.info_outline,
-                maxLines: 4,
-                hint: 'Tell others about yourself...',
-                focusNode: _bioFocusNode,
-              ),
-              SizedBox(height: 24),
-              _buildSectionHeader('Education', Icons.school_outlined),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _collegeController,
-                label: 'College Name',
-                icon: Icons.school_outlined,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _yearController,
-                label: 'Year of Study',
-                icon: Icons.calendar_today_outlined,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _departmentController,
-                label: 'Department/Branch',
-                icon: Icons.work_outline,
-              ),
-              SizedBox(height: 24),
-              _buildSectionHeader('Skills & Goals', Icons.lightbulb_outline),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _primarySkillController,
-                label: 'Primary Skill',
-                icon: Icons.lightbulb_outline,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _careerGoalController,
-                label: 'Career Goal',
-                icon: Icons.flag_outlined,
-                maxLines: 3,
-                focusNode: _careerGoalFocusNode,
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _skillsController,
-                label: 'Skills (comma separated)',
-                icon: Icons.psychology_outlined,
-                hint: 'e.g., Flutter, Python, UI/UX',
-              ),
-              SizedBox(height: 24),
-              _buildSectionHeader('Portfolio Links', Icons.link_outlined),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _portfolioLinksController,
-                label: 'Portfolio Links (one per line)',
-                icon: Icons.link_outlined,
-                maxLines: 5,
-                hint: 'e.g., https://github.com/...\nhttps://linkedin.com/...',
-                focusNode: _portfolioLinksFocusNode,
-              ),
-              SizedBox(height: 30),
-              _buildSaveButton(),
-              SizedBox(height: 40),
-            ],
-          ),
-        ),
-      ),
-    ],
-    ),
-    ),
-    ),
+            ),
     );
   }
 
@@ -2995,39 +3087,42 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
                   borderRadius: BorderRadius.circular(16),
                   child: _selectedImage != null
                       ? Image.file(
-                    _selectedImage!,
-                    fit: BoxFit.contain,
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height * 0.6,
-                  )
-                      : CachedNetworkImage(
-                    imageUrl: _currentImageUrl!,
-                    placeholder: (context, url) => Container(
-                      color: Colors.black12,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.black12,
-                      child: Center(
-                        child: Icon(Icons.error, color: AppColors.errorColor),
-                      ),
-                    ),
-                    imageBuilder: (context, imageProvider) => Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * 0.7,
-                      ),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
+                          _selectedImage!,
                           fit: BoxFit.contain,
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * 0.6,
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: _currentImageUrl!,
+                          placeholder: (context, url) => Container(
+                            color: Colors.black12,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.primaryBlue),
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.black12,
+                            child: Center(
+                              child: Icon(Icons.error,
+                                  color: AppColors.errorColor),
+                            ),
+                          ),
+                          imageBuilder: (context, imageProvider) => Container(
+                            constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.7,
+                            ),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
                 ),
                 Positioned(
                   right: 8,
@@ -3113,40 +3208,40 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       ),
       child: _isLoading
           ? Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              color: Colors.white,
-              strokeWidth: 2,
-            ),
-          ),
-          SizedBox(width: 12),
-          Text(
-            'Saving...',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      )
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ),
+                SizedBox(width: 12),
+                Text(
+                  'Saving...',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            )
           : Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.save_outlined, size: 20),
-          SizedBox(width: 12),
-          Text(
-            'Save Profile',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.save_outlined, size: 20),
+                SizedBox(width: 12),
+                Text(
+                  'Save Profile',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     ).animate().fadeIn(duration: 400.ms);
   }
 
@@ -3195,11 +3290,13 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
             ),
             prefixIcon: Container(
               margin: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(icon, color: enabled ? AppColors.primaryBlue : Colors.grey),
+              child: Icon(icon,
+                  color: enabled ? AppColors.primaryBlue : Colors.grey),
             ),
             prefixIconConstraints: BoxConstraints(minWidth: 50, minHeight: 50),
             alignLabelWithHint: maxLines > 1,
-            contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
             isDense: false,
             floatingLabelStyle: TextStyle(color: AppColors.primaryBlue),
           ),
@@ -3211,7 +3308,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
             fontSize: 16,
           ),
           validator: validator,
-          textInputAction: maxLines > 1 ? TextInputAction.newline : TextInputAction.next,
+          textInputAction:
+              maxLines > 1 ? TextInputAction.newline : TextInputAction.next,
         ),
         if (infoText != null)
           Padding(
