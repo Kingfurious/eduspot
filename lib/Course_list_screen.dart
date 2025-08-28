@@ -1,9 +1,9 @@
 // screens/courses_list_screen.dart
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/course.dart';
 import 'course_detail_screen.dart';
-import 'dart:convert';
 import '/Services/ad_service.dart'; // Import the ad service
 
 // Color Palette
@@ -37,12 +37,14 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
 
   Future<void> _fetchCategories() async {
     try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('courses').get();
+      final QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('courses').get();
       final allCategories = ['All Categories'];
 
       snapshot.docs.forEach((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        if (data['category'] != null && !allCategories.contains(data['category'])) {
+        if (data['category'] != null &&
+            !allCategories.contains(data['category'])) {
           allCategories.add(data['category'] as String);
         }
       });
@@ -95,43 +97,44 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
       backgroundColor: primaryBlue,
       title: _isSearchExpanded
           ? TextField(
-        controller: _searchController,
-        style: TextStyle(color: Colors.white),
-        cursorColor: Colors.white,
-        decoration: InputDecoration(
-          hintText: 'Search courses...',
-          hintStyle: TextStyle(color: Colors.white70),
-          border: InputBorder.none,
-          prefixIcon: Icon(Icons.search, color: Colors.white70),
-          suffixIcon: IconButton(
-            icon: Icon(Icons.clear, color: Colors.white70),
-            onPressed: () {
-              _searchController.clear();
-              setState(() {
-                _searchQuery = '';
-                _isSearchExpanded = false;
-              });
-            },
-          ),
-        ),
-        onSubmitted: (value) {
-          setState(() {
-            _searchQuery = value;
-            _isSearchExpanded = false;
-          });
-        },
-      )
+              controller: _searchController,
+              style: TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
+              decoration: InputDecoration(
+                hintText: 'Search courses...',
+                hintStyle: TextStyle(color: Colors.white70),
+                border: InputBorder.none,
+                prefixIcon: Icon(Icons.search, color: Colors.white70),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.clear, color: Colors.white70),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {
+                      _searchQuery = '';
+                      _isSearchExpanded = false;
+                    });
+                  },
+                ),
+              ),
+              onSubmitted: (value) {
+                setState(() {
+                  _searchQuery = value;
+                  _isSearchExpanded = false;
+                });
+              },
+            )
           : Text(
-        'Explore Courses',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 22,
-        ),
-      ),
+              'Explore Courses',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+            ),
       actions: [
         IconButton(
-          icon: Icon(_isSearchExpanded ? Icons.close : Icons.search, color: Colors.white),
+          icon: Icon(_isSearchExpanded ? Icons.close : Icons.search,
+              color: Colors.white),
           onPressed: () {
             setState(() {
               _isSearchExpanded = !_isSearchExpanded;
@@ -221,7 +224,8 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
                         selectedColor: primaryBlue,
                         labelStyle: TextStyle(
                           color: isSelected ? Colors.white : Colors.black87,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                       );
                     }).toList(),
@@ -292,7 +296,8 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
                   category,
                   style: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),
@@ -357,15 +362,19 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
 
         print("Number of documents in snapshot: ${snapshot.data!.docs.length}");
 
-        final courses = snapshot.data!.docs.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          try {
-            return Course.fromFirestore(data, doc.id);
-          } catch (e) {
-            print('Error parsing course ${doc.id}: $e');
-            return null;
-          }
-        }).where((course) => course != null).cast<Course>().toList();
+        final courses = snapshot.data!.docs
+            .map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              try {
+                return Course.fromFirestore(data, doc.id);
+              } catch (e) {
+                print('Error parsing course ${doc.id}: $e');
+                return null;
+              }
+            })
+            .where((course) => course != null)
+            .cast<Course>()
+            .toList();
 
         print("Number of valid courses after parsing: ${courses.length}");
 
@@ -379,7 +388,7 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
         if (_searchQuery.isNotEmpty) {
           final query = _searchQuery.toLowerCase();
           courses.removeWhere((course) =>
-          !(course.name?.toLowerCase().contains(query) ?? false) &&
+              !(course.name?.toLowerCase().contains(query) ?? false) &&
               !(course.description?.toLowerCase().contains(query) ?? false) &&
               !(course.teacherName?.toLowerCase().contains(query) ?? false));
           print("After search filter: ${courses.length} courses");
@@ -445,265 +454,278 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: InkWell(
-          onTap: () {
-            // Use the modified navigation method that shows ads
-            _navigateToCourseDetail(context, course);
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-          // Course image with improved handling
-          ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      child: Stack(
-        children: [
-          Builder(builder: (context) {
-            String imageUrl = course.imageUrl ?? '';
-            if (imageUrl.contains('imgurl=')) {
-              try {
-                // Extract the imgurl parameter from Google Images URL
-                final urlParamStart = imageUrl.indexOf('imgurl=') + 7;
-                final urlParamEnd = imageUrl.indexOf('&', urlParamStart);
-                if (urlParamEnd > urlParamStart) {
-                  final encodedUrl = imageUrl.substring(urlParamStart, urlParamEnd);
-                  // Decode the URL (it's URL encoded in the Google link)
-                  imageUrl = Uri.decodeFull(encodedUrl);
-                }
-              } catch (e) {
-                print('Error extracting image URL: $e');
-                // Fallback to the original URL if extraction fails
-              }
-            }
-
-            // Handle different image formats
-            if (imageUrl.startsWith('data:image')) {
-              // Base64 image handling
-              return Container(
-                height: 150,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: MemoryImage(
-                      base64Decode(imageUrl.split(',')[1]),
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            } else {
-              // Network image handling
-              return Image.network(
-                imageUrl.isNotEmpty ? imageUrl : 'https://via.placeholder.com/400x200?text=No+Image',
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  print("Error loading image for course ${course.id}: $error");
-                  return Container(
-                    height: 150,
-                    width: double.infinity,
-                    color: Colors.grey.shade300,
-                    child: Icon(
-                      Icons.image_not_supported_outlined,
-                      color: Colors.grey.shade700,
-                      size: 36,
-                    ),
-                  );
-                },
-              );
-            }
-          }),
-
-          // Teacher info as an overlay with improved handling
-          if (course.teacherImage != null)
-            Positioned(
-              top: 8,
-              left: 8,
-              child: Container(
-                padding: EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Builder(builder: (context) {
-                  String teacherImageUrl = course.teacherImage!;
-
-                  // Also handle Google Images URLs for teacher images
-                  if (teacherImageUrl.contains('imgurl=')) {
-                    try {
-                      final urlParamStart = teacherImageUrl.indexOf('imgurl=') + 7;
-                      final urlParamEnd = teacherImageUrl.indexOf('&', urlParamStart);
-                      if (urlParamEnd > urlParamStart) {
-                        final encodedUrl = teacherImageUrl.substring(urlParamStart, urlParamEnd);
-                        teacherImageUrl = Uri.decodeFull(encodedUrl);
+        onTap: () {
+          // Use the modified navigation method that shows ads
+          _navigateToCourseDetail(context, course);
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Course image with improved handling
+            ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              child: Stack(
+                children: [
+                  Builder(builder: (context) {
+                    String imageUrl = course.imageUrl ?? '';
+                    if (imageUrl.contains('imgurl=')) {
+                      try {
+                        // Extract the imgurl parameter from Google Images URL
+                        final urlParamStart = imageUrl.indexOf('imgurl=') + 7;
+                        final urlParamEnd =
+                            imageUrl.indexOf('&', urlParamStart);
+                        if (urlParamEnd > urlParamStart) {
+                          final encodedUrl =
+                              imageUrl.substring(urlParamStart, urlParamEnd);
+                          // Decode the URL (it's URL encoded in the Google link)
+                          imageUrl = Uri.decodeFull(encodedUrl);
+                        }
+                      } catch (e) {
+                        print('Error extracting image URL: $e');
+                        // Fallback to the original URL if extraction fails
                       }
-                    } catch (e) {
-                      print('Error extracting teacher image URL: $e');
                     }
-                  }
 
-                  // Handle base64 teacher images if needed
-                  if (teacherImageUrl.startsWith('data:image')) {
-                    return CircleAvatar(
-                      radius: 20,
-                      backgroundImage: MemoryImage(
-                        base64Decode(teacherImageUrl.split(',')[1]),
+                    // Handle different image formats
+                    if (imageUrl.startsWith('data:image')) {
+                      // Base64 image handling
+                      return Container(
+                        height: 150,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: MemoryImage(
+                              base64Decode(imageUrl.split(',')[1]),
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Network image handling
+                      return Image.network(
+                        imageUrl.isNotEmpty
+                            ? imageUrl
+                            : 'https://via.placeholder.com/400x200?text=No+Image',
+                        height: 150,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          print(
+                              "Error loading image for course ${course.id}: $error");
+                          return Container(
+                            height: 150,
+                            width: double.infinity,
+                            color: Colors.grey.shade300,
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              color: Colors.grey.shade700,
+                              size: 36,
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  }),
+
+                  // Teacher info as an overlay with improved handling
+                  if (course.teacherImage != null)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Builder(builder: (context) {
+                          String teacherImageUrl = course.teacherImage!;
+
+                          // Also handle Google Images URLs for teacher images
+                          if (teacherImageUrl.contains('imgurl=')) {
+                            try {
+                              final urlParamStart =
+                                  teacherImageUrl.indexOf('imgurl=') + 7;
+                              final urlParamEnd =
+                                  teacherImageUrl.indexOf('&', urlParamStart);
+                              if (urlParamEnd > urlParamStart) {
+                                final encodedUrl = teacherImageUrl.substring(
+                                    urlParamStart, urlParamEnd);
+                                teacherImageUrl = Uri.decodeFull(encodedUrl);
+                              }
+                            } catch (e) {
+                              print('Error extracting teacher image URL: $e');
+                            }
+                          }
+
+                          // Handle base64 teacher images if needed
+                          if (teacherImageUrl.startsWith('data:image')) {
+                            return CircleAvatar(
+                              radius: 20,
+                              backgroundImage: MemoryImage(
+                                base64Decode(teacherImageUrl.split(',')[1]),
+                              ),
+                              backgroundColor: Colors.grey.shade300,
+                            );
+                          } else {
+                            return CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(teacherImageUrl),
+                              onBackgroundImageError: (exception, stackTrace) {
+                                print(
+                                    "Error loading teacher image: $exception");
+                              },
+                              backgroundColor: Colors.grey.shade300,
+                              child: teacherImageUrl.isEmpty
+                                  ? Icon(Icons.person,
+                                      size: 20, color: Colors.grey.shade700)
+                                  : null,
+                            );
+                          }
+                        }),
                       ),
-                      backgroundColor: Colors.grey.shade300,
-                    );
-                  } else {
-                    return CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(teacherImageUrl),
-                      onBackgroundImageError: (exception, stackTrace) {
-                        print("Error loading teacher image: $exception");
-                      },
-                      backgroundColor: Colors.grey.shade300,
-                      child: teacherImageUrl.isEmpty
-                          ? Icon(Icons.person, size: 20, color: Colors.grey.shade700)
-                          : null,
-                    );
-                  }
-                }),
+                    ),
+                ],
               ),
             ),
-        ],
-      ),
-    ),
 
-    Padding(
-    padding: EdgeInsets.all(16),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    // Category and Level badges
-    Row(
-    children: [
-    if (course.category != null)
-    Container(
-    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    decoration: BoxDecoration(
-    color: Colors.indigo.shade100,
-    borderRadius: BorderRadius.circular(16),
-    ),
-    child: Text(
-    course.category!,
-    style: TextStyle(
-    color: Colors.indigo.shade800,
-    fontSize: 12,
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    ),
-    SizedBox(width: 8),
-    if (course.level != null)
-    Container(
-    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    decoration: BoxDecoration(
-    color: _getLevelColor(course.level!),
-    borderRadius: BorderRadius.circular(16),
-    ),
-    child: Text(
-    course.level!,
-    style: TextStyle(
-    color: Colors.white,
-    fontSize: 12,
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    ),
-    ],
-    ),
-    SizedBox(height: 12),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Category and Level badges
+                  Row(
+                    children: [
+                      if (course.category != null)
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.shade100,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            course.category!,
+                            style: TextStyle(
+                              color: Colors.indigo.shade800,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      SizedBox(width: 8),
+                      if (course.level != null)
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: _getLevelColor(course.level!),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            course.level!,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
 
-    // Course title
-    Text(
-    course.name ?? 'No Title',
-    style: TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-    ),
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-    ),
-    SizedBox(height: 8),
+                  // Course title
+                  Text(
+                    course.name ?? 'No Title',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8),
 
-    // Course description
-    Text(
-    course.description ?? 'No description available',
-    style: TextStyle(
-    fontSize: 14,
-    color: Colors.grey.shade700,
-    ),
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-    ),
-    SizedBox(height: 12),
+                  // Course description
+                  Text(
+                    course.description ?? 'No description available',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 12),
 
-    // Course info row
-    Row(
-    children: [
-    Icon(Icons.person, size: 16, color: Colors.grey.shade600),
-    SizedBox(width: 4),
-    Flexible(
-    child: Text(
-    course.teacherName ?? 'Unknown Instructor',
-    style: TextStyle(color: Colors.grey.shade700),
-    overflow: TextOverflow.ellipsis,
-    ),
-    ),
-    Spacer(),
-    Icon(Icons.calendar_today, size: 16, color: Colors.grey.shade600),
-    SizedBox(width: 4),
-    Text(
-    course.duration ?? 'N/A',
-    style: TextStyle(color: Colors.grey.shade700),
-    ),
-    ],
-    ),
-    SizedBox(height: 8),
+                  // Course info row
+                  Row(
+                    children: [
+                      Icon(Icons.person, size: 16, color: Colors.grey.shade600),
+                      SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          course.teacherName ?? 'Unknown Instructor',
+                          style: TextStyle(color: Colors.grey.shade700),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.calendar_today,
+                          size: 16, color: Colors.grey.shade600),
+                      SizedBox(width: 4),
+                      Text(
+                        course.duration ?? 'N/A',
+                        style: TextStyle(color: Colors.grey.shade700),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
 
-    // Rating and price row
-    Row(
-    children: [
-    // Rating
-    if (course.rating != null) ...[
-    Icon(Icons.star, size: 18, color: Colors.amber),
-    SizedBox(width: 4),
-    Text(
-    course.rating.toString(),
-    style: TextStyle(
-    fontWeight: FontWeight.bold,
-    color: Colors.grey.shade800,
-    ),
-    ),
-    SizedBox(width: 4),
-      Text(
-        '(${course.enrolledStudents ?? 0} students)',
-        style: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 12,
+                  // Rating and price row
+                  Row(
+                    children: [
+                      // Rating
+                      if (course.rating != null) ...[
+                        Icon(Icons.star, size: 18, color: Colors.amber),
+                        SizedBox(width: 4),
+                        Text(
+                          course.rating.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          '(${course.enrolledStudents ?? 0} students)',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                      Spacer(),
+                      // Price
+                      Text(
+                        '₹${course.coursePrice ?? 'Free'}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ),
-    ],
-      Spacer(),
-      // Price
-      Text(
-        '₹${course.coursePrice ?? 'Free'}',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.green.shade700,
-        ),
-      ),
-    ],
-    ),
-    ],
-    ),
-    ),
-              ],
-          ),
       ),
     );
   }

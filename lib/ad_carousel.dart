@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Models/ad_model.dart';
 import 'Models/ad_service2.dart';
-import 'package:eduspark/ad_banner.dart';
+import 'ad_banner.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class AdCarousel extends StatefulWidget {
@@ -72,7 +72,7 @@ class _AdCarouselState extends State<AdCarousel> {
       child: CarouselSlider(
         options: CarouselOptions(
           height: widget.height,
-          aspectRatio: 16/9,
+          aspectRatio: 16 / 9,
           viewportFraction: 1.0,
           initialPage: 0,
           enableInfiniteScroll: _ads.length > 1,

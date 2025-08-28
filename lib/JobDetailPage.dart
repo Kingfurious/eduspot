@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:eduspark/apply_job_form.dart';
+import 'apply_job_form.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 

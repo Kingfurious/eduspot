@@ -1,11 +1,8 @@
-import 'package:eduspark/MentorHelp.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:file_picker/file_picker.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:confetti/confetti.dart';
 import 'CaseCertificate.dart';
 import 'MentorPage.dart';
@@ -70,14 +67,16 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
       } else {
         setState(() => isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Case study not found'),
+          SnackBar(
+              content: Text('Case study not found'),
               backgroundColor: primaryBlue),
         );
       }
     } catch (e) {
       setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading case study: $e'),
+        SnackBar(
+            content: Text('Error loading case study: $e'),
             backgroundColor: Colors.red),
       );
     }
@@ -126,58 +125,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
   }
 
   void _showTitleAndDescriptionDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // Get the screen size to make dialog responsive
-        final screenSize = MediaQuery
-            .of(context)
-            .size;
-
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            mainAxisSize: MainAxisSize.min, // Important to prevent overflow
-            children: [
-              Icon(Icons.info, color: primaryBlue),
-              SizedBox(width: 10),
-              Flexible( // Wrap the Text in Flexible to allow it to wrap if needed
-                child: Text(
-                  'Case Study Details',
-                  style: TextStyle(
-                    color: darkBlue,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          content: Container(
-            width: screenSize.width * 0.8 < 400 ? screenSize.width * 0.8 : 400,
-            // Responsive width
-            constraints: BoxConstraints(
-              maxHeight: screenSize.height * 0.6, // Limit maximum height
-            ),
-            child: SingleChildScrollView(
-              child: _buildTitleAndDescription(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              style: TextButton.styleFrom(foregroundColor: primaryBlue),
-              child: Text('Close'),
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 4,
-          insetPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
-        );
-      },
-    );
+    return;
   }
 
   Future<void> _checkUserProgress() async {
@@ -209,10 +157,10 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                   'level': i,
                   'submission': levelData['submission'] ?? '',
                   'score': score,
-                  'timestamp': levelData['timestamp'] as Timestamp? ??
-                      Timestamp.now(),
-                  'verificationMethod': levelData['verificationMethod'] ??
-                      'api',
+                  'timestamp':
+                      levelData['timestamp'] as Timestamp? ?? Timestamp.now(),
+                  'verificationMethod':
+                      levelData['verificationMethod'] ?? 'api',
                 });
               }
             }
@@ -250,9 +198,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
     double score = 0.0;
 
     // 1. Submission length analysis
-    int wordCount = normalizedSubmission
-        .split(' ')
-        .length;
+    int wordCount = normalizedSubmission.split(' ').length;
     double lengthScore = 0.0;
     if (wordCount < 20) {
       lengthScore = 2.0;
@@ -1215,17 +1161,17 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
 
     // Add terms from domainText and skillsText
     keyTerms.addAll(domainText.split(' ').where((term) => term.isNotEmpty));
-    keyTerms.addAll(
-        skillsText.split(',').map((s) => s.trim()).where((term) => term
-            .isNotEmpty));
+    keyTerms.addAll(skillsText
+        .split(',')
+        .map((s) => s.trim())
+        .where((term) => term.isNotEmpty));
 
     // Remove duplicates and empty strings
     keyTerms = keyTerms.where((term) => term.isNotEmpty).toSet().toList();
 
     // Count matching keywords
-    int matches = keyTerms
-        .where((term) => normalizedSubmission.contains(term))
-        .length;
+    int matches =
+        keyTerms.where((term) => normalizedSubmission.contains(term)).length;
     double keywordRatio = keyTerms.isEmpty ? 0 : matches / keyTerms.length;
     double relevanceScore = keywordRatio * 7.0; // Scale to max 7 points
 
@@ -1239,10 +1185,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
           .length;
       double problemMatchRatio = problem.isEmpty
           ? 0
-          : problemMatches / problem
-          .split(' ')
-          .where((word) => word.length > 4)
-          .length;
+          : problemMatches /
+              problem.split(' ').where((word) => word.length > 4).length;
       contextScore = problemMatchRatio * 3.0;
     } else if (level == 2) {
       // Check relevance to data-related terms in problem or challenges
@@ -1253,10 +1197,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
           .length;
       double dataMatchRatio = problem.isEmpty
           ? 0
-          : dataMatches / problem
-          .split(' ')
-          .where((word) => word.length > 4)
-          .length;
+          : dataMatches /
+              problem.split(' ').where((word) => word.length > 4).length;
       contextScore = dataMatchRatio * 3.0;
     } else if (level == 3) {
       int challengeMatches = challengeText
@@ -1266,10 +1208,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
           .length;
       double challengeMatchRatio = challengeText.isEmpty
           ? 0
-          : challengeMatches / challengeText
-          .split(' ')
-          .where((word) => word.length > 4)
-          .length;
+          : challengeMatches /
+              challengeText.split(' ').where((word) => word.length > 4).length;
       contextScore = challengeMatchRatio * 3.0;
     } else if (level == 4) {
       int challengeMatches = challengeText
@@ -1284,16 +1224,12 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
           .length;
       double challengeMatchRatio = challengeText.isEmpty
           ? 0
-          : challengeMatches / challengeText
-          .split(' ')
-          .where((word) => word.length > 4)
-          .length;
+          : challengeMatches /
+              challengeText.split(' ').where((word) => word.length > 4).length;
       double outcomeMatchRatio = outcomeText.isEmpty
           ? 0
-          : outcomeMatches / outcomeText
-          .split(' ')
-          .where((word) => word.length > 4)
-          .length;
+          : outcomeMatches /
+              outcomeText.split(' ').where((word) => word.length > 4).length;
       contextScore = ((challengeMatchRatio + outcomeMatchRatio) / 2) * 3.0;
     }
 
@@ -1311,12 +1247,9 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
         normalizedSubmission.contains('summary')) {
       structureScore += 0.5;
     }
-    int bulletPoints = '•'
-        .allMatches(normalizedSubmission)
-        .length;
-    int numberedPoints = RegExp(r'\d+\.')
-        .allMatches(normalizedSubmission)
-        .length;
+    int bulletPoints = '•'.allMatches(normalizedSubmission).length;
+    int numberedPoints =
+        RegExp(r'\d+\.').allMatches(normalizedSubmission).length;
     if (bulletPoints > 0 || numberedPoints > 0) {
       structureScore += 0.5;
     }
@@ -1327,8 +1260,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
 
     print('Simplified verification results:');
     print('- Length score: $lengthScore (from $wordCount words)');
-    print('- Relevance score: $relevanceScore (matched $matches of ${keyTerms
-        .length} key terms)');
+    print(
+        '- Relevance score: $relevanceScore (matched $matches of ${keyTerms.length} key terms)');
     print('- Context score: $contextScore');
     print('- Structure score: $structureScore');
     print('- Total score: $score');
@@ -1348,8 +1281,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
       print('Borderline score ($simplifiedScore), using API verification');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              'Borderline submission, using detailed verification...'),
+          content:
+              Text('Borderline submission, using detailed verification...'),
           backgroundColor: primaryBlue,
         ),
       );
@@ -1372,8 +1305,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
     switch (level) {
       case 1:
         prompt =
-        'Evaluate this summary against the problem statement: "${caseStudyData!['description'] ??
-            ''}"\n'
+            'Evaluate this summary against the problem statement: "${caseStudyData!['description'] ?? ''}"\n'
             'User submission: "$submission"\n'
             'Assign a score out of 10 based on relevance and content. '
             'Give partial credit (at least 5/10) if the submission addresses at least 50% of the problem statement, '
@@ -1383,8 +1315,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
         break;
       case 2:
         prompt =
-        'Evaluate this explanation of datasets or research insights for: "${caseStudyData!['description'] ??
-            ''}"\n'
+            'Evaluate this explanation of datasets or research insights for: "${caseStudyData!['description'] ?? ''}"\n'
             'User submission: "$submission"\n'
             'Assign a score out of 10, giving at least 5/10 if it partially relates to the problem (e.g., describes data for identifying Python errors). '
             'Award higher scores for detailed explanations or examples. '
@@ -1392,8 +1323,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
         break;
       case 3:
         prompt =
-        'Evaluate if this is a valid solution proposal for: "${caseStudyData!['description'] ??
-            ''}"\n'
+            'Evaluate if this is a valid solution proposal for: "${caseStudyData!['description'] ?? ''}"\n'
             'User submission: "$submission"\n'
             'Assign a score out of 10, giving at least 5/10 if it partially addresses the problem (e.g., suggests a method for error detection). '
             'Award higher scores for feasibility and detail. '
@@ -1401,8 +1331,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
         break;
       case 4:
         prompt =
-        'Evaluate if this is a complete case study report for: "${caseStudyData!['description'] ??
-            ''}"\n'
+            'Evaluate if this is a complete case study report for: "${caseStudyData!['description'] ?? ''}"\n'
             'User submission: "$submission"\n'
             'Assign a score out of 10, giving at least 5/10 if it partially covers the problem (e.g., includes some analysis or solution). '
             'Award higher scores for completeness and quality. '
@@ -1427,7 +1356,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
       );
 
       final result = jsonDecode(response.body);
-      String responseText = result['candidates'][0]['content']['parts'][0]['text'];
+      String responseText =
+          result['candidates'][0]['content']['parts'][0]['text'];
 
       print('Gemini API Response for Level $level: $responseText');
 
@@ -1449,8 +1379,6 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
       return await _simplifiedVerification(submission, level);
     }
   }
-
-
 
   Future<Map<String, dynamic>?> _getStudentProfile(String uid) async {
     try {
@@ -1525,8 +1453,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Congratulations! You have successfully completed Level ${selectedLevel ??
-                        currentLevel}.',
+                    'Congratulations! You have successfully completed Level ${selectedLevel ?? currentLevel}.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -1551,8 +1478,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                         ),
                         SizedBox(width: 12),
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
                             color: primaryBlue,
                             borderRadius: BorderRadius.circular(16),
@@ -1574,15 +1501,15 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        verificationMethod == 'simplified' ?
-                        Icons.speed : Icons.schema,
+                        verificationMethod == 'simplified'
+                            ? Icons.speed
+                            : Icons.schema,
                         size: 16,
                         color: Colors.grey[600],
                       ),
                       SizedBox(width: 4),
                       Text(
-                        'Verified using ${verificationMethod == 'simplified' ?
-                        'simplified scoring' : 'Gemini API'}',
+                        'Verified using ${verificationMethod == 'simplified' ? 'simplified scoring' : 'Gemini API'}',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
@@ -1626,8 +1553,8 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text(
-                        'Get Certificate', style: TextStyle(fontSize: 16)),
+                    child:
+                        Text('Get Certificate', style: TextStyle(fontSize: 16)),
                   ),
               ],
             ),
@@ -1638,114 +1565,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
   }
 
   Future<void> _submitAnswer() async {
-    if (userSubmission == null || userSubmission!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter your submission'),
-          backgroundColor: Colors.red[700],
-        ),
-      );
-      return;
-    }
-
-    setState(() => isLoading = true);
-    double score = await _verifySubmission(
-        userSubmission!, selectedLevel ?? currentLevel);
-
-    var user = _auth.currentUser;
-    if (user == null) {
-      setState(() => isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('User not logged in'),
-          backgroundColor: Colors.red[700],
-        ),
-      );
-      return;
-    }
-
-    Map<String, dynamic>? profile = await _getStudentProfile(user.uid);
-    String fullName = profile?['fullName'] ?? 'Unknown';
-    String phoneNumber = profile?['phoneNumber'] ?? 'Not provided';
-
-    if (score >= 5.0) {
-      // Store the submission with profile info
-      await FirebaseFirestore.instance
-          .collection('user_case_study_progress')
-          .doc(user.uid)
-          .collection('case_studies')
-          .doc(widget.caseStudyId)
-          .set({
-        'currentLevel': currentLevel + 1,
-        'fullName': fullName,
-        'phoneNumber': phoneNumber,
-        'level$currentLevel': {
-          'submission': userSubmission,
-          'timestamp': FieldValue.serverTimestamp(),
-          'verified': true,
-          'score': score,
-          'apiFailed': false,
-          'verificationMethod': verificationMethod,
-        },
-      }, SetOptions(merge: true));
-
-      // Update local state
-      setState(() {
-        // Add to previous submissions
-        previousSubmissions.add({
-          'level': currentLevel,
-          'submission': userSubmission,
-          'score': score, // This is already a double from _verifySubmission
-          'timestamp': Timestamp.now(),
-          'verificationMethod': verificationMethod,
-        });
-
-        currentLevel++;
-        userSubmission = null;
-        _submissionController.clear();
-        selectedLevel = null;
-
-        // Show success dialog with confetti
-        isLoading = false;
-        _showSuccessDialog(score);
-      });
-    } else {
-      // Store the failed submission
-      if (score > 0.0) {
-        await FirebaseFirestore.instance
-            .collection('user_case_study_progress')
-            .doc(user.uid)
-            .collection('case_studies')
-            .doc(widget.caseStudyId)
-            .set({
-          'fullName': fullName,
-          'phoneNumber': phoneNumber,
-          'level${selectedLevel ?? currentLevel}': {
-            'submission': userSubmission,
-            'timestamp': FieldValue.serverTimestamp(),
-            'verified': false,
-            'score': score,
-            'apiFailed': score < 5.0 && score > 0.0,
-            'verificationMethod': verificationMethod,
-          },
-        }, SetOptions(merge: true));
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Submission score (${score.toStringAsFixed(
-              1)}/10) is below 5. Please improve and try again.'),
-          duration: Duration(seconds: 5),
-          backgroundColor: Colors.orange[800],
-          action: SnackBarAction(
-            label: 'See Hints',
-            textColor: Colors.white,
-            onPressed: _showHints,
-          ),
-        ),
-      );
-      setState(() => isLoading = false);
-    }
+    return;
   }
 
   void _showHints() {
@@ -1761,188 +1581,171 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
 
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.lightbulb, color: Colors.amber),
+            SizedBox(width: 10),
+            Text('Hints', style: TextStyle(color: darkBlue)),
+          ],
+        ),
+        content: Text(caseStudyData!['hints'] ?? 'No hints available'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: primaryBlue,
             ),
-            title: Row(
-              children: [
-                Icon(Icons.lightbulb, color: Colors.amber),
-                SizedBox(width: 10),
-                Text('Hints', style: TextStyle(color: darkBlue)),
-              ],
-            ),
-            content: Text(caseStudyData!['hints'] ?? 'No hints available'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                style: TextButton.styleFrom(
-                  foregroundColor: primaryBlue,
-                ),
-                child: Text('OK'),
-              ),
-            ],
-            backgroundColor: Colors.white,
-            elevation: 4,
+            child: Text('OK'),
           ),
+        ],
+        backgroundColor: Colors.white,
+        elevation: 4,
+      ),
     );
   }
 
   void _showVerificationInfo() {
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Text(
-              'Submission Verification',
-              style: TextStyle(color: darkBlue, fontWeight: FontWeight.bold),
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // First tier - simplified verification
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: veryLightBlue,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Submission Verification',
+          style: TextStyle(color: darkBlue, fontWeight: FontWeight.bold),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // First tier - simplified verification
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: veryLightBlue,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.speed, color: primaryBlue, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              'Quick Analysis',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: darkBlue,
-                              ),
-                            ),
-                          ],
+                        Icon(Icons.speed, color: primaryBlue, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Quick Analysis',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: darkBlue,
+                          ),
                         ),
-                        SizedBox(height: 8),
-                        Text('• Length and detail'),
-                        Text('• Relevant keywords'),
-                        Text('• Problem coverage'),
-                        Text('• Structure'),
                       ],
                     ),
-                  ),
-
-                  SizedBox(height: 16),
-
-                  // Second tier - API verification
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: veryLightBlue,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                                Icons.psychology, color: primaryBlue, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              'AI Evaluation',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: darkBlue,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Text('For borderline submissions'),
-                        SizedBox(height: 4),
-                        Text('• Level-specific scoring'),
-                        Text('• Minimum 5/10 to advance'),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 12),
-                  Text(
-                    'A score of 5/10 or higher advances you to the next level.',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                  ),
-                ],
+                    SizedBox(height: 8),
+                    Text('• Length and detail'),
+                    Text('• Relevant keywords'),
+                    Text('• Problem coverage'),
+                    Text('• Structure'),
+                  ],
+                ),
               ),
-            ),
-            actions: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Switch(
-                    value: enableTieredVerification,
-                    onChanged: (value) {
-                      setState(() {
-                        enableTieredVerification = value;
-                        Navigator.pop(context);
-                        // Reopen the dialog to reflect the change
-                        Future.delayed(
-                            Duration(milliseconds: 300), _showVerificationInfo);
-                      });
-                    },
-                    activeColor: primaryBlue,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  Text(
-                    enableTieredVerification ? 'On' : 'Off',
-                    style: TextStyle(
-                      color: enableTieredVerification ? primaryBlue : Colors
-                          .grey,
-                      fontSize: 12,
+
+              SizedBox(height: 16),
+
+              // Second tier - API verification
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: veryLightBlue,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.psychology, color: primaryBlue, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'AI Evaluation',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: darkBlue,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Spacer(),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      foregroundColor: primaryBlue,
-                    ),
-                    child: Text('Close'),
-                  ),
-                ],
+                    SizedBox(height: 8),
+                    Text('For borderline submissions'),
+                    SizedBox(height: 4),
+                    Text('• Level-specific scoring'),
+                    Text('• Minimum 5/10 to advance'),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 12),
+              Text(
+                'A score of 5/10 or higher advances you to the next level.',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
             ],
-            backgroundColor: Colors.white,
-            elevation: 4,
           ),
-    );
-  }
-
-  Widget _buildVerificationStep(String title, String description) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: TextStyle(
-              fontWeight: FontWeight.bold, color: darkBlue, fontSize: 13)),
-          Text(description, style: TextStyle(fontSize: 12)),
+        ),
+        actions: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Switch(
+                value: enableTieredVerification,
+                onChanged: (value) {
+                  setState(() {
+                    enableTieredVerification = value;
+                    Navigator.pop(context);
+                    // Reopen the dialog to reflect the change
+                    Future.delayed(
+                        Duration(milliseconds: 300), _showVerificationInfo);
+                  });
+                },
+                activeColor: primaryBlue,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              Text(
+                enableTieredVerification ? 'On' : 'Off',
+                style: TextStyle(
+                  color: enableTieredVerification ? primaryBlue : Colors.grey,
+                  fontSize: 12,
+                ),
+              ),
+              Spacer(),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: primaryBlue,
+                ),
+                child: Text('Close'),
+              ),
+            ],
+          ),
         ],
+        backgroundColor: Colors.white,
+        elevation: 4,
       ),
     );
   }
 
+  Widget _buildVerificationStep(String title, String description) {
+    return SizedBox.shrink();
+  }
+
   void _navigateToMentorHelp() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MentorPage()),
-    );
+    return;
   }
 
   void _navigateToCertificate() {
@@ -1951,17 +1754,16 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              CertificatePage(
-                caseStudyId: widget.caseStudyId,
-                userId: user.uid,
-                problemTitle: caseStudyData!['title'] ?? 'Untitled Case Study',
-                problemDescription: caseStudyData!['description'] ??
-                    'No description available',
-                skills: caseStudyData!['skills'] ?? '',
-                domain: caseStudyData!['domain'] ?? '',
-                outcome: caseStudyData!['outcome'] ?? '',
-              ),
+          builder: (context) => CertificatePage(
+            caseStudyId: widget.caseStudyId,
+            userId: user.uid,
+            problemTitle: caseStudyData!['title'] ?? 'Untitled Case Study',
+            problemDescription:
+                caseStudyData!['description'] ?? 'No description available',
+            skills: caseStudyData!['skills'] ?? '',
+            domain: caseStudyData!['domain'] ?? '',
+            outcome: caseStudyData!['outcome'] ?? '',
+          ),
         ),
       );
     }
@@ -2040,12 +1842,10 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                               Row(
                                 children: [
                                   Icon(Icons.star,
-                                      color: Colors.amber,
-                                      size: 18),
+                                      color: Colors.amber, size: 18),
                                   SizedBox(width: 4),
                                   Text(
-                                    '${(submission['score'] as double)
-                                        .toStringAsFixed(1)}/10',
+                                    '${(submission['score'] as double).toStringAsFixed(1)}/10',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -2068,8 +1868,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Submitted: ${_formatTimestamp(
-                                    submission['timestamp'] as Timestamp)}',
+                                'Submitted: ${_formatTimestamp(submission['timestamp'] as Timestamp)}',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey[600],
@@ -2116,8 +1915,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
 
   String _formatTimestamp(Timestamp timestamp) {
     final date = timestamp.toDate();
-    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute
-        .toString().padLeft(2, '0')}';
+    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
 
   Widget _buildLevelContent() {
@@ -2170,17 +1968,14 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
           Expanded(
             child: ListView(
               children: [
-                _buildRoadmapTile(
-                    1, 'Understanding the Problem',
+                _buildRoadmapTile(1, 'Understanding the Problem',
                     'Summarize the problem statement'),
-                _buildRoadmapTile(
-                    2, 'Data Collection & Analysis',
+                _buildRoadmapTile(2, 'Data Collection & Analysis',
                     'Explain datasets or insights'),
                 _buildRoadmapTile(3, 'Solution Proposal', 'Propose a solution'),
                 _buildRoadmapTile(
                     4, 'Final Report Submission', 'Submit a full report'),
-                _buildRoadmapTile(
-                    5, 'Certificate', 'Claim your certificate',
+                _buildRoadmapTile(5, 'Certificate', 'Claim your certificate',
                     isCertificate: true),
                 if (caseStudyData!.containsKey('related') &&
                     caseStudyData!['related'] != null)
@@ -2755,10 +2550,10 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                     SizedBox(height: 8),
                     Text(
                       '• Problem statement summary\n'
-                          '• Data collection and analysis methods\n'
-                          '• Proposed solution with implementation details\n'
-                          '• Expected outcomes and metrics\n'
-                          '• Challenges and future improvements',
+                      '• Data collection and analysis methods\n'
+                      '• Proposed solution with implementation details\n'
+                      '• Expected outcomes and metrics\n'
+                      '• Challenges and future improvements',
                       style: TextStyle(
                         color: darkBlue,
                       ),
@@ -2816,8 +2611,7 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Report prepared for submission (${userSubmission!
-                                  .length} characters)',
+                              'Report prepared for submission (${userSubmission!.length} characters)',
                               style: TextStyle(color: Colors.green[800]),
                             ),
                           ),
@@ -2887,7 +2681,9 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
             ),
           ),
           backgroundColor: isUnlocked
-              ? isCurrentLevel ? primaryBlue : Colors.green
+              ? isCurrentLevel
+                  ? primaryBlue
+                  : Colors.green
               : Colors.grey,
         ),
         title: Text(
@@ -2910,12 +2706,16 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
         trailing: Container(
           decoration: BoxDecoration(
             color: isUnlocked
-                ? isCurrentLevel ? veryLightBlue : Colors.green[50]
+                ? isCurrentLevel
+                    ? veryLightBlue
+                    : Colors.green[50]
                 : Colors.grey[100],
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isUnlocked
-                  ? isCurrentLevel ? primaryBlue : Colors.green
+                  ? isCurrentLevel
+                      ? primaryBlue
+                      : Colors.green
                   : Colors.grey,
               width: 1,
             ),
@@ -2924,23 +2724,25 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
           child: Icon(
             isUnlocked ? Icons.lock_open : Icons.lock,
             color: isUnlocked
-                ? isCurrentLevel ? primaryBlue : Colors.green
+                ? isCurrentLevel
+                    ? primaryBlue
+                    : Colors.green
                 : Colors.grey,
             size: 20,
           ),
         ),
         onTap: isUnlocked
             ? () {
-          setState(() {
-            if (isCertificate) {
-              _navigateToCertificate();
-            } else {
-              selectedLevel = level;
-              _submissionController.clear();
-              userSubmission = null;
-            }
-          });
-        }
+                setState(() {
+                  if (isCertificate) {
+                    _navigateToCertificate();
+                  } else {
+                    selectedLevel = level;
+                    _submissionController.clear();
+                    userSubmission = null;
+                  }
+                });
+              }
             : null,
       ),
     );
@@ -3007,321 +2809,12 @@ class _CaseStudyDetailPageState extends State<CaseStudyDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        primaryColor: primaryBlue,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: primaryBlue,
-          secondary: accentBlue,
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: primaryBlue,
-          elevation: 0,
-        ),
-        scaffoldBackgroundColor: Colors.grey[50],
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            caseStudyData != null
-                ? caseStudyData!['title'] ?? 'Case Study'
-                : 'Loading...',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15),
-            ),
-          ),
-          actions: [
-            if (selectedLevel != null)
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                tooltip: 'Back to roadmap',
-                onPressed: () {
-                  setState(() {
-                    selectedLevel = null;
-                    userSubmission = null;
-                    _submissionController.clear();
-                  });
-                },
-              ),
-            if (caseStudyData != null && caseStudyData!.containsKey('hints') &&
-                selectedLevel != null)
-              IconButton(
-                icon: Icon(Icons.lightbulb_outline),
-                tooltip: 'View hints',
-                onPressed: _showHints,
-              ),
-            IconButton(
-              icon: Icon(
-                enableTieredVerification ? Icons.speed : Icons.psychology,
-                color: Colors.white,
-              ),
-              tooltip: enableTieredVerification
-                  ? 'Tiered Verification On'
-                  : 'Tiered Verification Off',
-              onPressed: () {
-                setState(() {
-                  enableTieredVerification = !enableTieredVerification;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      enableTieredVerification
-                          ? 'Tiered verification enabled: Fast assessment for clear cases'
-                          : 'Tiered verification disabled: All submissions use Gemini API',
-                    ),
-                    duration: Duration(seconds: 3),
-                    backgroundColor: enableTieredVerification
-                        ? primaryBlue
-                        : Colors.grey[700],
-                    action: SnackBarAction(
-                      label: 'Learn More',
-                      textColor: Colors.white,
-                      onPressed: _showVerificationInfo,
-                    ),
-                  ),
-                );
-              },
-            ),
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert),
-              onSelected: (value) {
-                if (value == 'verify') {
-                  _showVerificationInfo();
-                } else if (value == 'mentor') {
-                  _navigateToMentorHelp(); // Navigate to MentorHelpPage
-                } else if (value == 'domain') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Domain: ${caseStudyData?['domain'] ??
-                          'Not specified'}'),
-                      backgroundColor: primaryBlue,
-                    ),
-                  );
-                } else if (value == 'skills') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Skills: ${caseStudyData?['skills'] ??
-                          'Not specified'}'),
-                      backgroundColor: primaryBlue,
-                    ),
-                  );
-                } else if (value == 'tiered') {
-                  setState(() {
-                    enableTieredVerification = !enableTieredVerification;
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        enableTieredVerification
-                            ? 'Tiered verification enabled'
-                            : 'Tiered verification disabled',
-                      ),
-                      backgroundColor: primaryBlue,
-                    ),
-                  );
-                }
-              },
-              itemBuilder: (BuildContext context) =>
-              <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'verify',
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.verified_user, color: primaryBlue),
-                    title: Text('How We Verify Answers'),
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'mentor',
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.support_agent, color: primaryBlue),
-                    title: Text('Ask Mentor Help'),
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'domain',
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.domain, color: primaryBlue),
-                    title: Text('View Domain'),
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'skills',
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.build, color: primaryBlue),
-                    title: Text('View Skills'),
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'tiered',
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      enableTieredVerification ? Icons.speed : Icons.psychology,
-                      color: primaryBlue,
-                    ),
-                    title: Text(
-                      enableTieredVerification
-                          ? 'Disable Tiered Verification'
-                          : 'Enable Tiered Verification',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Progress:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: darkBlue,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            if (enableTieredVerification)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Tooltip(
-                                  message: 'Tiered verification enabled',
-                                  child: Icon(
-                                    Icons.speed,
-                                    color: accentBlue,
-                                    size: 16,
-                                  ),
-                                ),
-                              ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: currentLevel > 4
-                                    ? Colors.green
-                                    : primaryBlue,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                'Level $currentLevel/4',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: LinearProgressIndicator(
-                        value: currentLevel / 4,
-                        backgroundColor: Colors.grey[200],
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          currentLevel > 4 ? Colors.green : primaryBlue,
-                        ),
-                        minHeight: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
-              Expanded(child: _buildLevelContent()),
-              if (selectedLevel != null && selectedLevel! <= 4)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : _submitAnswer,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (isLoading)
-                          SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white),
-                              strokeWidth: 2,
-                            ),
-                          ),
-                        if (isLoading) SizedBox(width: 10),
-                        Text(
-                          isLoading ? 'Verifying...' : 'Submit Answer',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        if (enableTieredVerification && !isLoading)
-                          Row(
-                            children: [
-                              SizedBox(width: 8),
-                              Icon(Icons.speed, size: 16),
-                            ],
-                          ),
-                      ],
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryBlue,
-                      foregroundColor: Colors.white,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      minimumSize: Size(double.infinity, 54),
-                      disabledBackgroundColor: Colors.grey[300],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _showTitleAndDescriptionDialog,
-          backgroundColor: primaryBlue,
-          child: Icon(Icons.info, color: Colors.white),
-          tooltip: 'View Case Study Details',
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Case Study"),
+        actions: [],
+        backgroundColor: Colors.white,
+        elevation: 4,
       ),
     );
   }

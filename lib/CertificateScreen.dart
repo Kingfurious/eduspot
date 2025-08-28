@@ -1,15 +1,11 @@
-import 'package:eduspark/UploadProjectForm.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
 class CertificateRequestPage extends StatefulWidget {
@@ -39,7 +35,12 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
   // Progress tracking
   int _currentStep = 0;
-  final List<String> _steps = ['Submit Details', 'Payment', 'Verification', 'Certificate'];
+  final List<String> _steps = [
+    'Submit Details',
+    'Payment',
+    'Verification',
+    'Certificate'
+  ];
 
   @override
   void initState() {
@@ -73,7 +74,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
           print("Certificate price loaded from Firebase: $_certificatePrice");
         });
       } else {
-        print("Price document doesn't exist or missing 'price' field, using default: $_certificatePrice");
+        print(
+            "Price document doesn't exist or missing 'price' field, using default: $_certificatePrice");
       }
     } catch (e) {
       print("Error fetching certificate price: $e");
@@ -95,7 +97,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       if (promoDoc.exists) {
         setState(() {
           // Print what we got from Firestore for debugging
-          print("Fetched promo code from Firestore: ${promoDoc.data()?['certificate_promo']}");
+          print(
+              "Fetched promo code from Firestore: ${promoDoc.data()?['certificate_promo']}");
           _validPromoCode = promoDoc.data()?['certificate_promo'] ?? "GOKUL08";
         });
       } else {
@@ -136,8 +139,12 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
           // Check for promo code separately from payment
           final bool hasPromoCode = data['promoCodeApplied'] != null;
-          final int? storedDiscountedPrice = data['discountedPrice'] != null ? data['discountedPrice'] as int : null;
-          final int? storedOriginalPrice = data['originalPrice'] != null ? data['originalPrice'] as int : null;
+          final int? storedDiscountedPrice = data['discountedPrice'] != null
+              ? data['discountedPrice'] as int
+              : null;
+          final int? storedOriginalPrice = data['originalPrice'] != null
+              ? data['originalPrice'] as int
+              : null;
 
           setState(() {
             // Set verification status
@@ -211,7 +218,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     if (_isPaymentSuccessful) {
       _showAnimatedDialog(
         title: 'Payment Already Completed',
-        message: 'You have already made a payment for this certificate. Please proceed to the next step.',
+        message:
+            'You have already made a payment for this certificate. Please proceed to the next step.',
         icon: Icons.check_circle,
         iconColor: Colors.green,
       );
@@ -222,7 +230,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     if (user == null) {
       _showAnimatedDialog(
         title: 'Authentication Required',
-        message: 'Please log in to continue with the certificate request process.',
+        message:
+            'Please log in to continue with the certificate request process.',
         icon: Icons.account_circle,
         iconColor: Colors.blue,
       );
@@ -232,7 +241,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     if (_nameController.text.isEmpty || _phoneController.text.isEmpty) {
       _showAnimatedDialog(
         title: 'Missing Information',
-        message: 'Please provide your full name and phone number to proceed with payment.',
+        message:
+            'Please provide your full name and phone number to proceed with payment.',
         icon: Icons.info_outline,
         iconColor: Colors.orange,
       );
@@ -328,7 +338,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
         setState(() => _applyingPromo = false);
         _showAnimatedDialog(
           title: 'Promo Already Applied',
-          message: 'You have already applied a promo code. The discount of 50% has been applied to your certificate.',
+          message:
+              'You have already applied a promo code. The discount of 50% has been applied to your certificate.',
           icon: Icons.info_outline,
           iconColor: Colors.blue,
         );
@@ -380,7 +391,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
         _showAnimatedDialog(
           title: 'Promo Code Applied!',
-          message: 'Congratulations! 50% discount has been applied to your certificate. New price: ₹$newPrice',
+          message:
+              'Congratulations! 50% discount has been applied to your certificate. New price: ₹$newPrice',
           icon: Icons.local_offer,
           iconColor: Colors.green,
           showConfetti: true,
@@ -390,7 +402,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
         setState(() => _applyingPromo = false);
         _showAnimatedDialog(
           title: 'Invalid Promo Code',
-          message: 'The promo code you entered is not valid. Please check and try again.',
+          message:
+              'The promo code you entered is not valid. Please check and try again.',
           icon: Icons.error_outline,
           iconColor: Colors.red,
         );
@@ -400,7 +413,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       setState(() => _applyingPromo = false);
       _showAnimatedDialog(
         title: 'Error',
-        message: 'Something went wrong while verifying your promo code. Please try again later.',
+        message:
+            'Something went wrong while verifying your promo code. Please try again later.',
         icon: Icons.warning,
         iconColor: Colors.orange,
       );
@@ -416,7 +430,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     _storePaymentDetails(response.paymentId!);
     _showAnimatedDialog(
       title: 'Payment Successful!',
-      message: 'Your payment has been processed successfully. We will contact you soon for verification.',
+      message:
+          'Your payment has been processed successfully. We will contact you soon for verification.',
       icon: Icons.check_circle,
       iconColor: Colors.green,
       showConfetti: true,
@@ -444,7 +459,10 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
     try {
       // First, get the latest project details
-      final projectDoc = await FirebaseFirestore.instance.collection('projects').doc(widget.projectId).get();
+      final projectDoc = await FirebaseFirestore.instance
+          .collection('projects')
+          .doc(widget.projectId)
+          .get();
       final projectTitle = projectDoc.data()?['title'] as String? ?? 'Untitled';
 
       // Prepare payment data with all critical fields
@@ -464,7 +482,9 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
       // If promo code was applied, ensure those details are saved too
       if (_isPromoCodeApplied) {
-        paymentData['promoCodeApplied'] = _promoCodeController.text.isEmpty ? "APPLIED" : _promoCodeController.text;
+        paymentData['promoCodeApplied'] = _promoCodeController.text.isEmpty
+            ? "APPLIED"
+            : _promoCodeController.text;
         paymentData['discountedPrice'] = _discountedPrice;
       }
 
@@ -483,16 +503,18 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       print("✅ Payment details stored in Firestore successfully");
 
       // Also notify admin via email about the payment
-      final String paymentMessage = "Payment completed. Amount: ₹$_discountedPrice" +
-          (_isPromoCodeApplied ? " (with 50% discount from original price ₹$_certificatePrice)" : "");
+      final String paymentMessage =
+          "Payment completed. Amount: ₹$_discountedPrice" +
+              (_isPromoCodeApplied
+                  ? " (with 50% discount from original price ₹$_certificatePrice)"
+                  : "");
 
       await _sendVerificationRequestEmail(
           _nameController.text,
           user.email ?? 'unknown@example.com',
           _phoneController.text,
           projectTitle,
-          paymentMessage
-      );
+          paymentMessage);
 
       // Double-check that the data was stored correctly by retrieving it
       _checkVerificationStatus();
@@ -505,8 +527,7 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
   Future<void> _pickProofFile() async {
     final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['json', 'h5', 'pth', 'csv', 'pdf', 'jpg', 'png']
-    );
+        allowedExtensions: ['json', 'h5', 'pth', 'csv', 'pdf', 'jpg', 'png']);
 
     if (result != null) {
       setState(() => _proofFile = File(result.files.single.path!));
@@ -516,10 +537,12 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
   Future<void> _submitProof() async {
     // First check if already submitted
-    if (_verificationStatus == 'pending_manual' || _verificationStatus == 'approved') {
+    if (_verificationStatus == 'pending_manual' ||
+        _verificationStatus == 'approved') {
       _showAnimatedDialog(
         title: 'Already Submitted',
-        message: 'You have already submitted your proof and it is currently under review or approved.',
+        message:
+            'You have already submitted your proof and it is currently under review or approved.',
         icon: Icons.info_outline,
         iconColor: Colors.blue,
       );
@@ -530,7 +553,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     if (user == null || _proofFile == null) {
       _showAnimatedDialog(
         title: 'Missing File',
-        message: 'Please upload a proof file to continue with the verification process.',
+        message:
+            'Please upload a proof file to continue with the verification process.',
         icon: Icons.file_upload_off,
         iconColor: Colors.orange,
       );
@@ -545,7 +569,10 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       final userEmail = user.email ?? 'unknown@example.com';
       final phoneNumber = _phoneController.text.trim();
 
-      final projectDoc = await FirebaseFirestore.instance.collection('projects').doc(widget.projectId).get();
+      final projectDoc = await FirebaseFirestore.instance
+          .collection('projects')
+          .doc(widget.projectId)
+          .get();
       final projectTitle = projectDoc.data()?['title'] as String? ?? 'Untitled';
 
       // Generate a unique filename with timestamp to avoid cache issues
@@ -554,7 +581,9 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       final fileName = 'proof_${timestamp}.$fileExtension';
 
       // Upload file to Firebase Storage
-      final ref = FirebaseStorage.instance.ref().child('user_files/${user.uid}/${widget.projectId}/$fileName');
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('user_files/${user.uid}/${widget.projectId}/$fileName');
       await ref.putFile(_proofFile!);
       final proofUrl = await ref.getDownloadURL();
       print("📤 File uploaded to Firebase Storage: $proofUrl");
@@ -598,8 +627,9 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
           phoneNumber,
           projectTitle,
           "Proof file submitted: $proofUrl\nPayment status: " +
-              (_isPaymentSuccessful ? "Paid (₹$_discountedPrice)" : "Not paid yet")
-      );
+              (_isPaymentSuccessful
+                  ? "Paid (₹$_discountedPrice)"
+                  : "Not paid yet"));
 
       // Pop loading dialog
       Navigator.of(context).pop();
@@ -611,7 +641,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
 
       _showAnimatedDialog(
         title: 'Proof Submitted',
-        message: 'Your proof has been submitted successfully! Our team will review it and contact you for the verification meeting.',
+        message:
+            'Your proof has been submitted successfully! Our team will review it and contact you for the verification meeting.',
         icon: Icons.check_circle,
         iconColor: Colors.green,
       );
@@ -631,9 +662,11 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     }
   }
 
-  Future<void> _sendVerificationRequestEmail(String userName, String userEmail, String phoneNumber, String projectTitle, String proofUrl) async {
+  Future<void> _sendVerificationRequestEmail(String userName, String userEmail,
+      String phoneNumber, String projectTitle, String proofUrl) async {
     const adminEmail = 'vijaygokul120@gmail.com';
-    final url = Uri.parse('https://your-server.com/send-email'); // Replace with your server endpoint
+    final url = Uri.parse(
+        'https://your-server.com/send-email'); // Replace with your server endpoint
 
     try {
       final response = await http.post(url, body: {
@@ -651,7 +684,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
         ''',
       });
 
-      print("📧 Notification email sent to admin. Status: ${response.statusCode}");
+      print(
+          "📧 Notification email sent to admin. Status: ${response.statusCode}");
     } catch (e) {
       print("⚠️ Could not send email notification: $e");
       // We don't want to fail the whole process if just the email fails
@@ -669,7 +703,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Column(
             children: [
               if (showConfetti)
@@ -707,7 +742,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: iconColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   padding: EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
@@ -728,10 +764,12 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         margin: EdgeInsets.all(8),
-        action: message.contains('Error') ? SnackBarAction(
-          label: 'OK',
-          onPressed: () {},
-        ) : null,
+        action: message.contains('Error')
+            ? SnackBarAction(
+                label: 'OK',
+                onPressed: () {},
+              )
+            : null,
       ),
     );
   }
@@ -742,7 +780,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -797,24 +836,26 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                       decoration: BoxDecoration(
                         color: isActive ? Colors.indigo : Colors.grey.shade300,
                         shape: BoxShape.circle,
-                        boxShadow: isActive ? [
-                          BoxShadow(
-                            color: Colors.indigo.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          )
-                        ] : null,
+                        boxShadow: isActive
+                            ? [
+                                BoxShadow(
+                                  color: Colors.indigo.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                )
+                              ]
+                            : null,
                       ),
                       child: Center(
                         child: isCompleted
                             ? Icon(Icons.check, color: Colors.white, size: 18)
                             : Text(
-                          '${index + 1}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                                '${index + 1}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
 
@@ -845,8 +886,11 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
               return Expanded(
                 child: Text(
                   label,
-                  textAlign: index == 0 ? TextAlign.start :
-                  index == _steps.length - 1 ? TextAlign.end : TextAlign.center,
+                  textAlign: index == 0
+                      ? TextAlign.start
+                      : index == _steps.length - 1
+                          ? TextAlign.end
+                          : TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
                     color: isActive ? Colors.indigo : Colors.grey,
@@ -955,7 +999,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                           hintText: 'Enter promo code',
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
@@ -966,7 +1011,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.indigo, width: 2),
+                            borderSide:
+                                BorderSide(color: Colors.indigo, width: 2),
                           ),
                           prefixIcon: Icon(Icons.redeem, color: Colors.indigo),
                         ),
@@ -982,7 +1028,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                       backgroundColor: Colors.indigo,
                       foregroundColor: Colors.white,
                       elevation: 2,
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -990,14 +1037,16 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     ),
                     child: _applyingPromo
                         ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : Text('Apply', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text('Apply',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -1042,40 +1091,42 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: _isPromoCodeApplied ? Colors.green.shade700 : Colors.indigo.shade700,
+                  color: _isPromoCodeApplied
+                      ? Colors.green.shade700
+                      : Colors.indigo.shade700,
                 ),
               ),
               _isPromoCodeApplied
                   ? Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "$_certificatePrice",
-                    style: TextStyle(
-                      fontSize: 24,
-                      decoration: TextDecoration.lineThrough,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    "$_discountedPrice",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green.shade700,
-                    ),
-                  ),
-                ],
-              )
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "$_certificatePrice",
+                          style: TextStyle(
+                            fontSize: 24,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "$_discountedPrice",
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade700,
+                          ),
+                        ),
+                      ],
+                    )
                   : Text(
-                "$_certificatePrice",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade700,
-                ),
-              ),
+                      "$_certificatePrice",
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo.shade700,
+                      ),
+                    ),
               SizedBox(width: 8),
               if (_isPromoCodeApplied)
                 Container(
@@ -1156,25 +1207,29 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
           _buildProcessStep(
             number: "1",
             title: "Complete Payment",
-            description: "Pay the certification fee or apply a valid promo code to proceed",
+            description:
+                "Pay the certification fee or apply a valid promo code to proceed",
             isActive: _currentStep >= 0,
           ),
           _buildProcessStep(
             number: "2",
             title: "Expert Evaluation",
-            description: "Our experts will review your project and schedule a verification meeting",
+            description:
+                "Our experts will review your project and schedule a verification meeting",
             isActive: _currentStep >= 1,
           ),
           _buildProcessStep(
             number: "3",
             title: "Verification Meeting",
-            description: "Attend a meeting with our experts to verify your project and knowledge",
+            description:
+                "Attend a meeting with our experts to verify your project and knowledge",
             isActive: _currentStep >= 2,
           ),
           _buildProcessStep(
             number: "4",
             title: "Receive Certificate",
-            description: "Get your digital certificate via email after successful verification",
+            description:
+                "Get your digital certificate via email after successful verification",
             isActive: _currentStep >= 3,
             isLast: true,
           ),
@@ -1224,8 +1279,7 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
               ),
             ),
           ),
-        if (isLast)
-          SizedBox(width: 14.5),
+        if (isLast) SizedBox(width: 14.5),
         // Step content
         Expanded(
           child: Padding(
@@ -1238,7 +1292,9 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isActive ? Colors.indigo.shade800 : Colors.grey.shade700,
+                    color: isActive
+                        ? Colors.indigo.shade800
+                        : Colors.grey.shade700,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -1246,7 +1302,9 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: isActive ? Colors.indigo.shade700 : Colors.grey.shade600,
+                    color: isActive
+                        ? Colors.indigo.shade700
+                        : Colors.grey.shade600,
                   ),
                 ),
               ],
@@ -1262,7 +1320,10 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
     final user = _auth.currentUser;
 
     return FutureBuilder<DocumentSnapshot>(
-      future: FirebaseFirestore.instance.collection('projects').doc(widget.projectId).get(),
+      future: FirebaseFirestore.instance
+          .collection('projects')
+          .doc(widget.projectId)
+          .get(),
       builder: (context, projectSnapshot) {
         if (!projectSnapshot.hasData || _isLoading) {
           return Scaffold(
@@ -1289,7 +1350,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
           );
         }
 
-        final projectData = projectSnapshot.data!.data() as Map<String, dynamic>? ?? {};
+        final projectData =
+            projectSnapshot.data!.data() as Map<String, dynamic>? ?? {};
         final projectTitle = projectData['title'] ?? 'Untitled';
 
         return Scaffold(
@@ -1309,13 +1371,17 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     // Header with project info
                     Card(
                       elevation: 2,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
                       child: Container(
                         padding: EdgeInsets.all(24),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           gradient: LinearGradient(
-                            colors: [Colors.indigo.shade600, Colors.indigo.shade800],
+                            colors: [
+                              Colors.indigo.shade600,
+                              Colors.indigo.shade800
+                            ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -1340,7 +1406,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Get Certified',
@@ -1367,7 +1434,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                             ),
                             SizedBox(height: 20),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
@@ -1404,7 +1472,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     // Personal information section
                     Card(
                       elevation: 2,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -1424,7 +1493,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                               decoration: InputDecoration(
                                 labelText: 'Full Name',
                                 hintText: 'Enter your full name',
-                                prefixIcon: Icon(Icons.person, color: Colors.indigo),
+                                prefixIcon:
+                                    Icon(Icons.person, color: Colors.indigo),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
                                 border: OutlineInputBorder(
@@ -1433,11 +1503,13 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey.shade200),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.indigo, width: 2),
+                                  borderSide: BorderSide(
+                                      color: Colors.indigo, width: 2),
                                 ),
                               ),
                             ),
@@ -1448,7 +1520,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                               decoration: InputDecoration(
                                 labelText: 'Phone Number',
                                 hintText: 'Enter your phone number',
-                                prefixIcon: Icon(Icons.phone, color: Colors.indigo),
+                                prefixIcon:
+                                    Icon(Icons.phone, color: Colors.indigo),
                                 filled: true,
                                 fillColor: Colors.grey.shade50,
                                 border: OutlineInputBorder(
@@ -1457,11 +1530,13 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.grey.shade200),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade200),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: Colors.indigo, width: 2),
+                                  borderSide: BorderSide(
+                                      color: Colors.indigo, width: 2),
                                 ),
                               ),
                             ),
@@ -1475,7 +1550,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     // Price and Payment section
                     Card(
                       elevation: 2,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -1498,28 +1574,34 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                               width: double.infinity,
                               height: 56,
                               child: ElevatedButton.icon(
-                                onPressed: _isPaymentSuccessful ? null : _openCheckout,
+                                onPressed:
+                                    _isPaymentSuccessful ? null : _openCheckout,
                                 icon: Icon(Icons.payment, size: 24),
                                 label: _isPromoCodeApplied
                                     ? RichText(
-                                  text: TextSpan(
-                                    style: TextStyle(fontSize: 18, color: Colors.white),
-                                    children: [
-                                      TextSpan(text: 'Pay '),
-                                      TextSpan(
-                                        text: '₹$_discountedPrice',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                      TextSpan(text: ' for Certificate'),
-                                    ],
-                                  ),
-                                )
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white),
+                                          children: [
+                                            TextSpan(text: 'Pay '),
+                                            TextSpan(
+                                              text: '₹$_discountedPrice',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            TextSpan(text: ' for Certificate'),
+                                          ],
+                                        ),
+                                      )
                                     : Text(
-                                  'Pay ₹$_certificatePrice for Certificate',
-                                  style: TextStyle(fontSize: 18),
-                                ),
+                                        'Pay ₹$_certificatePrice for Certificate',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _isPaymentSuccessful ? Colors.green : Colors.indigo,
+                                  backgroundColor: _isPaymentSuccessful
+                                      ? Colors.green
+                                      : Colors.indigo,
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -1535,7 +1617,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.check_circle, color: Colors.green, size: 16),
+                                    Icon(Icons.check_circle,
+                                        color: Colors.green, size: 16),
                                     SizedBox(width: 8),
                                     Text(
                                       'Payment completed successfully',
@@ -1560,10 +1643,12 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     SizedBox(height: 20),
 
                     // Status or Proof upload section based on current status
-                    if (_isPaymentSuccessful && _verificationStatus == 'pending') ...[
+                    if (_isPaymentSuccessful &&
+                        _verificationStatus == 'pending') ...[
                       Card(
                         elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -1594,119 +1679,134 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                   border: Border.all(
                                     color: Colors.grey.shade300,
                                     width: 1,
-
                                   ),
                                 ),
                                 child: _proofFile == null
                                     ? InkWell(
-                                  onTap: _pickProofFile,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: Colors.indigo.shade50,
-                                          shape: BoxShape.circle,
+                                        onTap: _pickProofFile,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.indigo.shade50,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                Icons.cloud_upload,
+                                                size: 40,
+                                                color: Colors.indigo,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Text(
+                                              'Click to upload your proof file',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.indigo,
+                                              ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'Supported formats: JSON, H5, PTH, CSV, PDF, JPG, PNG',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        child: Icon(
-                                          Icons.cloud_upload,
-                                          size: 40,
-                                          color: Colors.indigo,
-                                        ),
-                                      ),
-                                      SizedBox(height: 16),
-                                      Text(
-                                        'Click to upload your proof file',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.indigo,
-                                        ),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        'Supported formats: JSON, H5, PTH, CSV, PDF, JPG, PNG',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey.shade600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
+                                      )
                                     : Column(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.indigo.shade50,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
                                         children: [
                                           Container(
-                                            padding: EdgeInsets.all(10),
+                                            padding: EdgeInsets.all(16),
                                             decoration: BoxDecoration(
-                                              color: Colors.indigo.shade100,
-                                              borderRadius: BorderRadius.circular(8),
+                                              color: Colors.indigo.shade50,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            child: Icon(
-                                              Icons.insert_drive_file,
-                                              color: Colors.indigo,
-                                            ),
-                                          ),
-                                          SizedBox(width: 16),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                            child: Row(
                                               children: [
-                                                Text(
-                                                  _proofFile!.path.split('/').last,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.indigo.shade800,
+                                                Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.indigo.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
                                                   ),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  child: Icon(
+                                                    Icons.insert_drive_file,
+                                                    color: Colors.indigo,
+                                                  ),
                                                 ),
-                                                SizedBox(height: 4),
-                                                Text(
-                                                  'File selected successfully',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey.shade700,
+                                                SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        _proofFile!.path
+                                                            .split('/')
+                                                            .last,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .indigo.shade800,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Text(
+                                                        'File selected successfully',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors
+                                                              .grey.shade700,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.close,
+                                                      color: Colors.red),
+                                                  onPressed: () => setState(
+                                                      () => _proofFile = null),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          IconButton(
-                                            icon: Icon(Icons.close, color: Colors.red),
-                                            onPressed: () => setState(() => _proofFile = null),
+                                          SizedBox(height: 16),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 50,
+                                            child: ElevatedButton.icon(
+                                              onPressed: _submitProof,
+                                              icon: Icon(Icons.upload_file),
+                                              label: Text('Submit Proof File'),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.indigo,
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    SizedBox(height: 16),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: 50,
-                                      child: ElevatedButton.icon(
-                                        onPressed: _submitProof,
-                                        icon: Icon(Icons.upload_file),
-                                        label: Text('Submit Proof File'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.indigo,
-                                          foregroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ),
                             ],
                           ),
@@ -1715,7 +1815,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     ] else if (_verificationStatus == 'pending_manual') ...[
                       Card(
                         elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -1752,11 +1853,13 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 decoration: BoxDecoration(
                                   color: Colors.orange.shade50,
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.orange.shade200),
+                                  border:
+                                      Border.all(color: Colors.orange.shade200),
                                 ),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.info_outline, color: Colors.orange),
+                                    Icon(Icons.info_outline,
+                                        color: Colors.orange),
                                     SizedBox(width: 12),
                                     Expanded(
                                       child: Text(
@@ -1777,7 +1880,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     ] else if (_verificationStatus == 'approved') ...[
                       Card(
                         elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -1815,8 +1919,10 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 label: Text('Download Certificate'),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: Colors.green.shade700,
-                                  side: BorderSide(color: Colors.green.shade300),
-                                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  side:
+                                      BorderSide(color: Colors.green.shade300),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 12),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -1829,7 +1935,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     ] else if (_verificationStatus == 'rejected') ...[
                       Card(
                         elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -1863,7 +1970,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                 decoration: BoxDecoration(
                                   color: Colors.red.shade50,
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.red.shade200),
+                                  border:
+                                      Border.all(color: Colors.red.shade200),
                                 ),
                                 child: Row(
                                   children: [
@@ -1898,10 +2006,13 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                       label: Text('Try Again'),
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: Colors.indigo,
-                                        side: BorderSide(color: Colors.indigo.shade300),
-                                        padding: EdgeInsets.symmetric(vertical: 12),
+                                        side: BorderSide(
+                                            color: Colors.indigo.shade300),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                       ),
                                     ),
@@ -1915,9 +2026,11 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.indigo,
                                         foregroundColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(vertical: 12),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                       ),
                                     ),
@@ -1935,7 +2048,8 @@ class _CertificateRequestPageState extends State<CertificateRequestPage> {
                     // Support contact section
                     Card(
                       elevation: 2,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(

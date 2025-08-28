@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:eduspark/Models/ad_model.dart';
+import 'Models/ad_model.dart';
 import 'Models/ad_service2.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -88,29 +87,29 @@ class _AdBannerState extends State<AdBanner> {
               // Video or Image content
               widget.ad.videoUrl != null && _isVideoInitialized
                   ? SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: _videoController!.value.size.width,
-                    height: _videoController!.value.size.height,
-                    child: VideoPlayer(_videoController!),
-                  ),
-                ),
-              )
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: SizedBox(
+                          width: _videoController!.value.size.width,
+                          height: _videoController!.value.size.height,
+                          child: VideoPlayer(_videoController!),
+                        ),
+                      ),
+                    )
                   : CachedNetworkImage(
-                imageUrl: widget.ad.imageUrl,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Center(
-                  child: CircularProgressIndicator(),
-                ),
-                errorWidget: (context, url, error) => Center(
-                  child: Icon(Icons.error),
-                ),
-              ),
+                      imageUrl: widget.ad.imageUrl,
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => Center(
+                        child: Icon(Icons.error),
+                      ),
+                    ),
 
               // Content overlay for title and description
               Positioned(

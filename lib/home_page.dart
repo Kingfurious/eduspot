@@ -1,9 +1,6 @@
-import 'package:eduspark/Applymentor.dart';
-import 'package:eduspark/Courseform.dart';
-import 'package:eduspark/Models/Course.dart';
-import 'package:eduspark/Researchmaster.dart';
-import 'package:eduspark/course_detail_screen.dart';
-import 'package:eduspark/jobs_page.dart';
+import 'Courseform.dart';
+import 'Researchmaster.dart';
+import 'jobs_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'LeaderboardScreen.dart';
@@ -12,16 +9,15 @@ import 'package:intl/intl.dart';
 import 'MentorPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:eduspark/CoursesScreen.dart';
-import 'package:eduspark/ProfileScreen.dart';
-import 'package:eduspark/MyTeamScreen.dart';
-import 'package:eduspark/projectsscreen.dart';
-import 'package:eduspark/AskHelpScreen.dart';
-import 'package:eduspark/LearnScreen.dart';
-import 'package:eduspark/StartupPage.dart';
-import 'package:eduspark/UploadProjectScreen.dart';
-import 'package:eduspark/UploadProjectForm.dart';
-import 'package:eduspark/Studymodepage.dart';
+import 'ProfileScreen.dart';
+import 'MyTeamScreen.dart';
+import 'projectsscreen.dart';
+import 'AskHelpScreen.dart';
+import 'LearnScreen.dart';
+import 'StartupPage.dart';
+import 'UploadProjectScreen.dart';
+import 'UploadProjectForm.dart';
+import 'Studymodepage.dart';
 import 'Course_list_screen.dart';
 import 'Learnscreenhome.dart';
 import 'innovation_score_service.dart';
@@ -207,9 +203,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected
-                  ? AppColors.primaryBlue
-                  : AppColors.textSecondary,
+              color:
+                  isSelected ? AppColors.primaryBlue : AppColors.textSecondary,
               size: 28,
             ),
             AnimatedDefaultTextStyle(
@@ -279,11 +274,11 @@ class _HomeScreenState extends State<HomeScreen>
 
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-          ),
-        );
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
+    );
 
     _isMessageBarVisible = true;
     _showSkipButton = false;
@@ -406,8 +401,8 @@ class _HomeScreenState extends State<HomeScreen>
     greeting = hour < 12
         ? 'Good Morning'
         : hour < 17
-        ? 'Good Afternoon'
-        : 'Good Evening';
+            ? 'Good Afternoon'
+            : 'Good Evening';
   }
 
   @override
@@ -418,10 +413,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   String _getInitials(String name) {
-    List<String> nameParts = name
-        .split(' ')
-        .where((part) => part.isNotEmpty)
-        .toList();
+    List<String> nameParts =
+        name.split(' ').where((part) => part.isNotEmpty).toList();
     if (nameParts.length > 1) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
     } else if (name.isNotEmpty) {
@@ -772,8 +765,8 @@ class _HomeScreenState extends State<HomeScreen>
                 snapshot.connectionState == ConnectionState.waiting
                     ? 'Calculating your score...'
                     : snapshot.hasError
-                    ? 'Error loading score'
-                    : 'Your creative impact',
+                        ? 'Error loading score'
+                        : 'Your creative impact',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.white.withOpacity(0.8),
@@ -1030,39 +1023,46 @@ class _HomeScreenState extends State<HomeScreen>
                                                 ),
                                               )
                                             : _isLoadingProfile
-                                            ? CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                child: Text(
-                                                  _getInitials(displayName),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              )
-                                            : _profileImageUrl != null &&
-                                                  _profileImageUrl!.isNotEmpty
-                                            ? CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                backgroundImage: NetworkImage(
-                                                  _profileImageUrl!,
-                                                ),
-                                              )
-                                            : CircleAvatar(
-                                                backgroundColor:
-                                                    AppColors.primaryBlue,
-                                                child: Text(
-                                                  _getInitials(displayName),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                              ),
+                                                ? CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.grey.shade200,
+                                                    child: Text(
+                                                      _getInitials(displayName),
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : _profileImageUrl != null &&
+                                                        _profileImageUrl!
+                                                            .isNotEmpty
+                                                    ? CircleAvatar(
+                                                        backgroundColor: Colors
+                                                            .grey.shade200,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                          _profileImageUrl!,
+                                                        ),
+                                                      )
+                                                    : CircleAvatar(
+                                                        backgroundColor:
+                                                            AppColors
+                                                                .primaryBlue,
+                                                        child: Text(
+                                                          _getInitials(
+                                                              displayName),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20,
+                                                          ),
+                                                        ),
+                                                      ),
                                       ),
                                     ),
                                   ),
@@ -1073,8 +1073,8 @@ class _HomeScreenState extends State<HomeScreen>
                                         backgroundColor: Colors.grey,
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
-                                              AppColors.primaryBlue,
-                                            ),
+                                          AppColors.primaryBlue,
+                                        ),
                                       ),
                                     ),
                                   if (_isOffline)
