@@ -1,0 +1,20 @@
+// Fix for ar_flutter_plugin missing namespace
+def applyPluginFix = { project ->
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'io.github.dronesolutions' &&
+                    details.requested.name == 'ar_flutter_plugin') {
+                project.dependencies {
+                    implementation(project(":ar_flutter_plugin")) {
+                        exclude group: 'io.github.dronesolutions'
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Apply to all projects
+rootProject.subprojects.each { subproject ->
+    applyPluginFix(subproject)
+}

@@ -1,0 +1,2 @@
+D:/eduspark/android/app/.cxx/Debug/3f611n4m/x86_64/CMakeFiles/edit_cache.dir
+D:/eduspark/android/app/.cxx/Debug/3f611n4m/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,190 @@
+{
+  "project_info": {
+    "project_number": "211248936521",
+    "project_id": "education-4919d",
+    "storage_bucket": "education-4919d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211248936521:android:367c78c66c5b7aafd0f198",
+        "android_client_info": {
+          "package_name": "com.eduspark.eduspark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp6t207EO8HIUXm3ivreKBf1c1AtBx-gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "211248936521-38u11dcbqor1ft3tc8j5iiu7l7b0h7k4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eduspark"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211248936521:android:7689d3c83049280bd0f198",
+        "android_client_info": {
+          "package_name": "com.example.eduapp2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp6t207EO8HIUXm3ivreKBf1c1AtBx-gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "211248936521-38u11dcbqor1ft3tc8j5iiu7l7b0h7k4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eduspark"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211248936521:android:c72d5756b342d827d0f198",
+        "android_client_info": {
+          "package_name": "com.example.education"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp6t207EO8HIUXm3ivreKBf1c1AtBx-gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "211248936521-38u11dcbqor1ft3tc8j5iiu7l7b0h7k4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eduspark"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211248936521:android:350f9d7d92f0c273d0f198",
+        "android_client_info": {
+          "package_name": "com.example.eduspark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp6t207EO8HIUXm3ivreKBf1c1AtBx-gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "211248936521-38u11dcbqor1ft3tc8j5iiu7l7b0h7k4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eduspark"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211248936521:android:93c4ed4adb4a380cd0f198",
+        "android_client_info": {
+          "package_name": "com.example.new_edu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp6t207EO8HIUXm3ivreKBf1c1AtBx-gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211248936521-djevle453tjskc47mf4b1hta7igp4vct.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "211248936521-38u11dcbqor1ft3tc8j5iiu7l7b0h7k4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.eduspark"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
